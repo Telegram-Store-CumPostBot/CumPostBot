@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "telegram"
+      POSTGRES_USER: "telegram"
+      POSTGRES_PASSWORD: "telegram"
+#    volumes:
+#      - ./docker_data/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
