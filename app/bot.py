@@ -1,13 +1,11 @@
-import asyncio
 import ssl
 
+from pyngrok import ngrok
 from aiogram import Bot, Dispatcher
-from aiogram.dispatcher.webhook import get_new_configured_app
-from aiogram.types import ParseMode, MenuButtonWebApp, WebAppInfo
+from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.fsm_storage.redis import RedisStorage2
 from aiogram.utils.executor import start_webhook
-from aiohttp import web
 
 from logger import get_logger
 from database.connection import connect_to_database
@@ -38,16 +36,30 @@ async def on_startup(dp: Dispatcher):
     register_all_middlewares(dp)
     register_all_filters(dp)
     register_all_handlers(dp)
-    print(f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}')
+
+    certificate = None
+    if settings.production:
+        certificate = open(settings.webhook_ssl_cert, 'rb')
+
+    url = f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
+    if not settings.production:
+        ngrok.set_auth_token(settings.ngrok_token)
+        http_tunnel = ngrok.connect(bind_tls=True)
+        url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
+
+    logger.debug(url)
     await dp.bot.set_webhook(
-        url=f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}',
-        certificate=open(settings.webhook_ssl_cert, 'rb'),
+        url=url,
+        certificate=certificate,
         drop_pending_updates=True,
     )
     await dp.bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
         text='Магазин',
         web_app=WebAppInfo(url='https://MihailPereverza.github.io')
     ))
+
+    logger.info('Web app was run')
+    logger.info('Bot stated!')
 
 
 async def on_shutdown(dp: Dispatcher):
@@ -65,55 +77,43 @@ def main():
     logger.info("Starting bot")
 
     storage = RedisStorage2() if settings.bot_use_redis_for_fsm_storage else MemoryStorage()
-    bot = Bot(token=settings.tg_bot_token, parse_mode=ParseMode.MARKDOWN_V2)
+    bot = Bot(token=settings.tg_bot_token)
     dp = Dispatcher(bot, storage=storage)
 
     logger.info('Сonfiguring web app')
-
-    # app = get_new_configured_app(
-    #     dispatcher=dp,
-    #     path=settings.tg_bot_webhook_path,
-    # )
-    # app.on_startup.append(on_startup)
-    # app.on_shutdown.append(on_shutdown)
-
     logger.info('Creating SSL context...')
 
-    context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-    context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
-    print(settings.webhook_ssl_cert)
+    context = None
+    if settings.production:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
 
     logger.info('SSL context was created')
     logger.info('Web app was configuring')
 
     logger.info('Running web app...')
-    print('adfsd')
-    # web.run_app(
-    #     app,
-    #     host='0.0.0.0',
-    #     port=3001,
-    #     ssl_context=context
-    # )
+
+    webapp_host = '0.0.0.0'
+    webapp_port = 3002
+    if not settings.production:
+        webapp_host = 'localhost'
+        webapp_port = 80
+
     start_webhook(
         dispatcher=dp,
-        webhook_path=settings.tg_bot_webhook_path + settings.tg_bot_token,
+        webhook_path=f'/webhook/{settings.tg_bot_token}',
         on_startup=on_startup,
         on_shutdown=on_shutdown,
         skip_updates=True,
-        host='0.0.0.0',
-        port=3002,
+        host=webapp_host,
+        port=webapp_port,
         ssl_context=context
     )
 
-    logger.info('Web app was run')
-    logger.info('Bot stated!')
-
 
 if __name__ == '__main__':
-    logger = get_logger('root')
-    # try:
-    main()
-    # except (KeyboardInterrupt, SystemExit):
-    #     logger.error('Bot stopped!')
-    # except Exception as e:
-    #     print(e)
+    logger = get_logger(__name__)
+    try:
+        main()
+    except (KeyboardInterrupt, SystemExit):
+        logger.error('Bot stopped!')
