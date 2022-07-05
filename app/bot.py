@@ -38,7 +38,7 @@ async def on_startup(dp: Dispatcher):
     register_all_middlewares(dp)
     register_all_filters(dp)
     register_all_handlers(dp)
-
+    print(f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}')
     await dp.bot.set_webhook(
         url=f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}',
         certificate=open(settings.webhook_ssl_cert, 'rb'),
@@ -101,7 +101,7 @@ def main():
         on_shutdown=on_shutdown,
         skip_updates=True,
         host='0.0.0.0',
-        port=80,
+        port=3002,
         ssl_context=context
     )
 
