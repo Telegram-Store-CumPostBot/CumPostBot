@@ -2,8 +2,8 @@ from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message
 
-from app.keyboards.regular import MainMenuKeyboard
-from app.logger import get_logger
+from keyboards.regular import MainMenuKeyboard
+from logger import get_logger
 
 
 async def start(message: Message, state: FSMContext):

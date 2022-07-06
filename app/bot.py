@@ -41,7 +41,7 @@ async def on_startup(dp: Dispatcher):
     if settings.production:
         certificate = open(settings.webhook_ssl_cert, 'rb')
 
-    url = f'{settings.tg_bot_webhook_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
+    url = f'https://{settings.tg_bot_webhook_host}:{settings.tg_bot_webhook_port}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
     if not settings.production:
         ngrok.set_auth_token(settings.ngrok_token)
         http_tunnel = ngrok.connect(bind_tls=True)
@@ -94,7 +94,7 @@ def main():
     logger.info('Running web app...')
 
     webapp_host = '0.0.0.0'
-    webapp_port = 3002
+    webapp_port = settings.tg_bot_webhook_port
     if not settings.production:
         webapp_host = 'localhost'
         webapp_port = 80
