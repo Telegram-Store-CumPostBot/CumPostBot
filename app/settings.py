@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     bot_use_redis_for_fsm_storage: bool = False
 
+    ngrok_token: str
+
 
 settings = Settings(
     _env_file='../.env',
