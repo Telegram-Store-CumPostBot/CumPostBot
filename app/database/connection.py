@@ -5,7 +5,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.engine.url import URL as DB_URL
 
-from app.settings import settings
+from settings import settings
 
 
 connection_url: DB_URL = DB_URL(drivername='postgresql',
