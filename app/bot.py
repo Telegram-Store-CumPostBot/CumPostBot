@@ -1,22 +1,23 @@
 import ssl
 
+import handlers.base
+
+from aiohttp import web
 from pyngrok import ngrok
 from aiogram import Bot, Dispatcher
 from aiogram.types import MenuButtonWebApp, WebAppInfo
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.contrib.fsm_storage.redis import RedisStorage2
-from aiogram.utils.executor import start_webhook
+from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.dispatcher.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 from logger import get_logger
 from database.connection import connect_to_database
 from settings import settings
 
-from handlers.base import register_base
+from middlewares.throttling import ThrottlingMiddleware
 
 
 def register_all_middlewares(dp: Dispatcher):
-    # dp.setup_middleware()
-    pass
+    dp.message.middleware(ThrottlingMiddleware())
 
 
 def register_all_filters(dp: Dispatcher):
@@ -25,17 +26,17 @@ def register_all_filters(dp: Dispatcher):
 
 
 def register_all_handlers(dp: Dispatcher):
-    register_base(dp)
+    dp.include_router(handlers.base.router)
 
 
-async def on_startup(dp: Dispatcher):
+async def on_startup(dispatcher: Dispatcher, bot: Bot):
     logger.info('Connecting to database...')
     await connect_to_database()
     logger.info('Was connect to database')
 
-    register_all_middlewares(dp)
-    register_all_filters(dp)
-    register_all_handlers(dp)
+    register_all_middlewares(dispatcher)
+    register_all_filters(dispatcher)
+    register_all_handlers(dispatcher)
 
     certificate = None
     if settings.production:
@@ -48,40 +49,43 @@ async def on_startup(dp: Dispatcher):
         url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
 
     logger.debug(url)
-    await dp.bot.set_webhook(
+    await bot.set_webhook(
         url=url,
         certificate=certificate,
         drop_pending_updates=True,
     )
-    await dp.bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
+    await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
         text='Магазин',
-        web_app=WebAppInfo(url='https://MihailPereverza.github.io')
+        web_app=WebAppInfo(url='https://vk.com')
     ))
 
     logger.info('Web app was run')
     logger.info('Bot stated!')
 
 
-async def on_shutdown(dp: Dispatcher):
+async def on_shutdown(dp: Dispatcher, bot: Bot):
     logger.info('Deleting telegram webhook...')
-    await dp.bot.delete_webhook()
+    await bot.delete_webhook()
     logger.info('Telegram webhook was deleted')
 
     logger.info('Closing telegram storage...')
     await dp.storage.close()
-    await dp.storage.wait_closed()
     logger.info('Telegram storage was closed')
 
 
 def main():
     logger.info("Starting bot")
-
-    storage = RedisStorage2() if settings.bot_use_redis_for_fsm_storage else MemoryStorage()
+    storage = MemoryStorage()
     bot = Bot(token=settings.tg_bot_token)
-    dp = Dispatcher(bot, storage=storage)
+    dp = Dispatcher(storage=storage)
+    dp.startup.register(on_startup)
 
     logger.info('Сonfiguring web app')
     logger.info('Creating SSL context...')
+
+    app = web.Application()
+    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
+    setup_application(app, dp, bot=bot)
 
     context = None
     if settings.production:
@@ -99,16 +103,7 @@ def main():
         webapp_host = 'localhost'
         webapp_port = 80
 
-    start_webhook(
-        dispatcher=dp,
-        webhook_path=f'/webhook/{settings.tg_bot_token}',
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        skip_updates=True,
-        host=webapp_host,
-        port=webapp_port,
-        ssl_context=context
-    )
+    web.run_app(app, host=webapp_host, port=webapp_port, ssl_context=context)
 
 
 if __name__ == '__main__':
