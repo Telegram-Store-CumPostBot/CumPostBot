@@ -20,7 +20,6 @@ class ThrottlingMiddleware(BaseMiddleware):
             event: Message,
             data: Dict[str, Any],
     ) -> Any:
-        print('gay')
         throttling_flags = get_flag(data, 'rate_limit')
         if not throttling_flags:
             throttling_flags = ThrottlingSettings.DEFAULT_FLAGS
