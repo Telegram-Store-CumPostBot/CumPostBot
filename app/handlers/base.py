@@ -12,7 +12,7 @@ from middlewares.middlewares_settings import ThrottlingSettings
 router = Router()
 
 
-@router.message()
+@router.message(commands=['start'])
 class StartHandler(MessageHandlerTemplate):
     def handle_flags(self):
         return ThrottlingSettings.DEFAULT_FLAGS
