@@ -3,9 +3,9 @@ services:
   postgres:
     image: postgres:13.3
     environment:
-      POSTGRES_DB: "telegram"
-      POSTGRES_USER: "telegram"
-      POSTGRES_PASSWORD: "telegram"
+      POSTGRES_DB: "CumPostBot"
+      POSTGRES_USER: "CumPostBot"
+      POSTGRES_PASSWORD: "Cum*Post*Bot*"
 #    volumes:
 #      - ./docker_data/postgres/data:/var/lib/postgresql/data
     ports:
