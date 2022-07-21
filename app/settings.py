@@ -3,6 +3,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     production: bool = False
+    bot_use_redis_for_fsm_storage: bool = False
 
     pg_user: str
     pg_pass: str
@@ -19,8 +20,6 @@ class Settings(BaseSettings):
     webhook_ssl_priv: str
 
     logging_file_name: str = 'app.log'
-
-    bot_use_redis_for_fsm_storage: bool = False
 
     ngrok_token: str
 
