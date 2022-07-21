@@ -44,8 +44,10 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
     url = f'https://{settings.tg_bot_webhook_host}:{settings.tg_bot_webhook_port}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
     if not settings.production:
+        logger.info('Connecting to ngrok...')
         ngrok.set_auth_token(settings.ngrok_token)
         http_tunnel = ngrok.connect(bind_tls=True)
+        logger.info('Was connect to ngrok')
         url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
 
     logger.debug(url)
