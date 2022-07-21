@@ -13,7 +13,6 @@ class Settings(BaseSettings):
     tg_bot_token: str
     tg_bot_webhook_host: str
     tg_bot_webhook_port: int
-    tg_bot_webhook_url: str
     tg_bot_webhook_path: str
 
     webhook_ssl_cert: str
@@ -27,6 +26,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings(
-    _env_file='../.env',
+    _env_file='./.env',
     _env_file_encoding='utf-8'
 )
