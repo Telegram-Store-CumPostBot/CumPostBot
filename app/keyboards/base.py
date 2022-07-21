@@ -40,7 +40,7 @@ class RegularKeyboard(ABC):
 class InlineKeyboard(ABC):
     @classmethod
     @abstractmethod
-    def get(*args, **kwargs) -> InlineKeyboardMarkup:
+    def get(cls, *args, **kwargs) -> InlineKeyboardMarkup:
         pass
 
     def _create_multiple(
