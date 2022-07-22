@@ -10,9 +10,7 @@ from cachetools import TTLCache
 
 
 class ThrottlingMiddleware(BaseMiddleware):
-    caches = {
-        ThrottlingSettings.DEFAULT_THROTTLE_KEY: TTLCache(maxsize=10_000, ttl=ThrottlingSettings.DEFAULT_THROTTLE_TIME)
-    }
+    caches = {}
 
     async def __call__(
             self,
