@@ -1,3 +1,4 @@
+from ormar import ModelMeta
 from databases import Database
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
@@ -24,6 +25,11 @@ engine = create_engine(connection_url)
 database = Database(connection_url.__str__())
 
 metadata = MetaData()
+
+
+class BaseMeta(ModelMeta):
+    metadata = metadata
+    database = database
 
 
 async def connect_to_database():
