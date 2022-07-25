@@ -1,13 +1,11 @@
-from typing import Optional
+from typing import Optional, ForwardRef
 
 from ormar import Model, Integer, ForeignKey, Float
 from database.connection import BaseMeta
 from database.models.tg_bot import TGBot
 
 
-# TODO найти способ без повторного объявления класса
-class Customer:
-    pass
+CustomerRef = ForwardRef("Customer")
 
 
 class Customer(Model):
@@ -20,5 +18,5 @@ class Customer(Model):
     chat_id = Integer(nullable=False)
     sum_orders: float = Float(nullable=False, default=0)
 
-    refer: Optional[Customer] = ForeignKey(Customer)
-    tg_bot: Optional[TGBot] = ForeignKey(TGBot)
+    refer: Optional[CustomerRef] = ForeignKey(CustomerRef, related_name="referes")
+    tg_bot: Optional[TGBot] = ForeignKey(TGBot, related_name="tg_bots")

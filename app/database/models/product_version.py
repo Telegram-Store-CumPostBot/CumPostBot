@@ -1,11 +1,10 @@
-from typing import Optional
+from typing import Optional, ForwardRef
 
 from ormar import Model, Integer, Float, Text, ForeignKey
 from database.connection import BaseMeta
 
 
-class Product:
-    pass
+ProductRef = ForwardRef("Product")
 
 
 class ProductVersion(Model):
@@ -18,4 +17,4 @@ class ProductVersion(Model):
     description: str = Text(nullable=False)
     extended_description: str = Text(nullable=False)
 
-    product: Optional[Product] = ForeignKey(Product)
+    product: Optional[ProductRef] = ForeignKey(ProductRef)
