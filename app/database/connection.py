@@ -33,7 +33,6 @@ class BaseMeta(ModelMeta):
 
 
 async def connect_to_database():
-
     while True:
         try:
             metadata.create_all(engine)
