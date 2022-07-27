@@ -18,6 +18,9 @@ class Customer(Model):
     fake_balance: float = Float(nullable=False, default=0)
     chat_id = Integer(nullable=False)
     sum_orders: float = Float(nullable=False, default=0)
+    username: str = String(max_length=32)
+    first_name: str = String(max_length=64)
+    last_name: str = String(max_length=64)
 
     refer: Optional[CustomerRef] = ForeignKey(CustomerRef, related_name="referes")
     tg_bot: Optional[TGBot] = ForeignKey(TGBot, related_name="tg_bots")
