@@ -45,5 +45,5 @@ class StartHandler(MessageHandlerTemplate):
 
         return await self.event.answer(
             text=start_text,
-            reply_markup=MainMenuKeyboard.get(),
+            reply_markup=MainMenuKeyboard().get(),
         )
