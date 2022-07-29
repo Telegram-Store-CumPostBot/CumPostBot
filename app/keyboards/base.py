@@ -65,6 +65,3 @@ class InlineKeyboard(ABC):
             ]
             for row in self
         ]
-
-
-
