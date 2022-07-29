@@ -24,3 +24,6 @@ class Customer(Model):
 
     refer: Optional[CustomerRef] = ForeignKey(CustomerRef, related_name="referes")
     tg_bot: Optional[TGBot] = ForeignKey(TGBot, related_name="tg_bots")
+
+
+Customer.update_forward_refs()
