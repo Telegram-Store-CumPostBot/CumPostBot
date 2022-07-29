@@ -9,6 +9,6 @@ class MainMenuKeyboard(RegularKeyboard):
     def _keyboard(self):
         return [
             [KeyboardButton(text='Купить товар'), KeyboardButton(text='Наличие товара')],
-            [KeyboardButton(text='Профиль'), KeyboardButton(text='Баланс')],
+            [KeyboardButton(text=PROFILE), KeyboardButton(text='Баланс')],
             [KeyboardButton(text='Помощь'), KeyboardButton(text='Межботные функции')],
         ]
