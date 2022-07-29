@@ -3,7 +3,7 @@ from typing import Any
 from aiogram import Router
 
 from database.models.customer import Customer
-from keyboards.regular import MainMenuKeyboard
+from keyboards.main_menu_keyboard import MainMenuKeyboard
 from logger import get_logger
 
 from handlers.handlers_templates import MessageHandlerTemplate
