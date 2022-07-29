@@ -1,6 +1,6 @@
 import ssl
 
-import handlers.base
+import handlers.start_handler
 
 from aiohttp import web
 from pyngrok import ngrok
@@ -26,7 +26,7 @@ def register_all_filters(dp: Dispatcher):
 
 
 def register_all_handlers(dp: Dispatcher):
-    dp.include_router(handlers.base.router)
+    dp.include_router(handlers.start_handler.router)
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
