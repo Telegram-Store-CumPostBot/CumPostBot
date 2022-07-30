@@ -28,20 +28,15 @@ class StartHandler(MessageHandlerTemplate):
 
         start_text = f'{self.chat.first_name} {self.chat.last_name}, добро пожаловать в секту!)'
 
-        # использую без limit, чтобы сразу отловить наличие более одной копии и пофиксить такой трабл
-        # user = await Customer.objects.filter(chat_id=self.chat.id).limit(1).values('id')
-        user = await Customer.objects.filter(chat_id=self.chat.id).values('id')
-        assert len(user) in (0, 1)
-
-        if not user:
+        if not await Customer.check_availability(self.chat.id):
             log.info(f'register new user with chat_id={self.chat.id} and username={self.chat.username}')
-            await Customer(
+            await Customer.create_new(
                 chat_id=self.chat.id,
                 username=self.chat.username,
                 first_name=self.chat.first_name,
                 last_name=self.chat.last_name,
-            ).save()
-            start_text = f'И снова здравствуй дед максим ({self.chat.first_name} {self.chat.last_name})'
+            )
+            start_text = f'{self.chat.first_name} {self.chat.last_name}, добро пожаловать в секту!)'
 
         return await self.event.answer(
             text=start_text,
