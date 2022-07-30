@@ -1,6 +1,6 @@
 import logging
 
-from settings import settings
+from settings.settings import settings
 
 
 def get_logger(name: str) -> logging.Logger:

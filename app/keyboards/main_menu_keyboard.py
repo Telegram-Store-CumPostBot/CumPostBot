@@ -1,7 +1,7 @@
 from aiogram.types import KeyboardButton
 
 from keyboards.base import RegularKeyboard
-from message_constants import PROFILE
+from settings.message_constants import PROFILE
 
 
 class MainMenuKeyboard(RegularKeyboard):

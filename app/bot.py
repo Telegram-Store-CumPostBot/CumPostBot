@@ -11,7 +11,7 @@ from aiogram.dispatcher.webhook.aiohttp_server import SimpleRequestHandler, setu
 
 from logger import get_logger
 from database.connection import connect_to_database
-from settings import settings
+from settings.settings import settings
 
 from middlewares.throttling import ThrottlingMiddleware
 

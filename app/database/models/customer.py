@@ -3,7 +3,7 @@ from typing import Optional, ForwardRef
 from ormar import Model, Integer, ForeignKey, Float, String, IndexColumns
 from database.connection import BaseMeta
 from database.models.tg_bot import TGBot
-
+from settings.settings import config
 
 CustomerRef = ForwardRef("Customer")
 

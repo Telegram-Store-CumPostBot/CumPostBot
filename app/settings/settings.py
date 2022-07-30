@@ -1,3 +1,5 @@
+import configparser
+
 from pydantic import BaseSettings
 
 
@@ -28,3 +30,7 @@ settings = Settings(
     _env_file='./.env',
     _env_file_encoding='utf-8'
 )
+
+
+config = configparser.ConfigParser()
+config.read('./app/settings/project.ini')
