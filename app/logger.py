@@ -16,6 +16,9 @@ def get_logger(name: str) -> logging.Logger:
 
     logger = logging.getLogger(name)
 
+    if logger.handlers:
+        return logger
+
     logger.addHandler(cls_handler)
     logger.addHandler(file_handler)
     logger.setLevel(logging.DEBUG)
