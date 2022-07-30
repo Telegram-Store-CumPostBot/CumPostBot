@@ -2,7 +2,6 @@ import ssl
 
 from cashews import cache
 
-import handlers.start_handler
 from handlers import global_router
 
 from aiohttp import web
@@ -29,7 +28,6 @@ def register_all_filters(dp: Dispatcher):
 
 
 def register_all_handlers(dp: Dispatcher):
-    dp.include_router(handlers.start_handler.router)
     dp.include_router(global_router)
 
 
