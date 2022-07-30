@@ -26,7 +26,7 @@ class StartHandler(MessageHandlerTemplate):
             log.debug(f"Canceling state: {current_state}")
             await self.state.clear()
 
-        start_text = f'{self.chat.first_name} {self.chat.last_name}, добро пожаловать в секту!)'
+        start_text = f'И снова здравствуй дед максим ({self.chat.first_name} {self.chat.last_name})'
 
         # использую без limit, чтобы сразу отловить наличие более одной копии и пофиксить такой трабл
         # user = await Customer.objects.filter(chat_id=self.chat.id).limit(1).values('id')
