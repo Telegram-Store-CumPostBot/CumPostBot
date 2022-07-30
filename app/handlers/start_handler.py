@@ -7,7 +7,6 @@ from keyboards.main_menu_keyboard import MainMenuKeyboard
 from logger import get_logger
 
 from handlers.handlers_templates import MessageHandlerTemplate
-from middlewares.middlewares_settings import ThrottlingSettings
 
 
 router = Router()
@@ -15,9 +14,6 @@ router = Router()
 
 @router.message(commands=['start'])
 class StartHandler(MessageHandlerTemplate):
-    def handle_flags(self):
-        return ThrottlingSettings.DEFAULT_FLAGS
-
     async def work(self) -> Any:
         log = get_logger(__name__)
         log.info(f'user with username={self.chat.username} and chat_id={self.chat.id} press "/start"')
