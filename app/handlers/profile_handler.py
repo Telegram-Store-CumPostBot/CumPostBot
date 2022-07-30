@@ -3,7 +3,6 @@ from typing import Any
 
 from aiogram import Router, flags
 from aiogram.dispatcher.filters import Text
-from cashews import cache
 
 from database.models.customer import Customer
 from handlers.handlers_templates import MessageHandlerTemplate
@@ -39,8 +38,7 @@ class ProfileHandler(MessageHandlerTemplate):
 
         user: dict = await Customer.get_static_info(self.chat.id)
         user.update(await Customer.get_balance(self.chat.id))
-        async for i in cache.get_match('*'):
-            print(i)
+
         return await self.event.answer(
             text=profile_template.substitute(
                 {
