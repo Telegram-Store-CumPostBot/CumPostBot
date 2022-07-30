@@ -8,6 +8,7 @@ from database.connection import BaseMeta
 from database.models.tg_bot import TGBot
 from settings.settings import config
 
+
 CustomerRef = ForwardRef("Customer")
 
 
@@ -37,7 +38,8 @@ class Customer(Model):
     @classmethod
     @cache(ttl=1_800_000, key='customer:availability:{chat_id}')
     async def check_availability(cls, chat_id: int) -> bool:
-        print('попал')
+        log = get_logger(__name__)
+        log.info('check user availability chat_id: %d', chat_id)
         # использую без limit, чтобы сразу отловить наличие более одной копии и пофиксить такой трабл
         # user = await Customer.objects.filter(chat_id=self.chat.id).limit(1).values('id')
         user = await Customer.objects.filter(chat_id=chat_id).values('id')
@@ -49,6 +51,8 @@ class Customer(Model):
     @classmethod
     @cache(ttl=float(config['CacheTimings']['user_balance']), key='customer:balance:{chat_id}')
     async def get_balance(cls, chat_id):
+        log = get_logger(__name__)
+        log.info('get user balance chat_id: %d', chat_id)
         user = await Customer.objects.filter(chat_id=chat_id).values(['balance', 'fake_balance', 'sum_orders', 'referral_fees'])
         user = user[0]
         return user
