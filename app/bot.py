@@ -1,5 +1,7 @@
 import ssl
 
+from cashews import cache
+
 import handlers.start_handler
 
 from aiohttp import web
@@ -76,6 +78,8 @@ async def on_shutdown(dp: Dispatcher, bot: Bot):
 
 
 def main():
+    cache.setup("mem://", size=1000)
+
     logger.info("Starting bot")
     storage = MemoryStorage()
     bot = Bot(token=settings.tg_bot_token)
