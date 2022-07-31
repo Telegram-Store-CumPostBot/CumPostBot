@@ -16,19 +16,20 @@ router = Router()
 class StartHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
-        log.info(f'user with username=%s and chat_id=%d press "/start"', self.chat.username, self.chat.id)
+        log.info('in bot bot_id=%d user with username=%s and chat_id=%d press "/start"', self.bot.id, self.chat.username, self.chat.id)
 
         if self.state and (current_state := await self.state.get_state()) is not None:
-            log.debug(f"user with username=%s and chat_id=%d: canceling state: %s", self.chat.username, self.chat.id,
+            log.debug('in bot_id=%d user with username=%s and chat_id=%d: canceling state: %s', self.bot.id, self.chat.username, self.chat.id,
                       current_state)
             await self.state.clear()
 
         start_text = f'И снова здравствуй дед максим ({self.chat.first_name} {self.chat.last_name})'
 
-        if not await Customer.check_availability(self.chat.id):
-            log.info(f'register new user with chat_id={self.chat.id} and username={self.chat.username}')
+        if not await Customer.check_availability(self.chat.id, self.bot.id):
+            log.info('in bot_id=%d register new user with chat_id=%d and username=%s', self.bot.id, self.chat.id, self.chat.username)
             await Customer.create_new(
                 chat_id=self.chat.id,
+                bot_id=self.bot.id,
                 username=self.chat.username,
                 first_name=self.chat.first_name,
                 last_name=self.chat.last_name,

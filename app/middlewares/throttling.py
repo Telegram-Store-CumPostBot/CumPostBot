@@ -10,9 +10,13 @@ from middlewares.middlewares_settings import ThrottlingSettings
 
 from cachetools import TTLCache
 
+from settings.settings import config
+
 
 class ThrottlingMiddleware(BaseMiddleware):
     caches = {}
+    throttling_key = config['FlagsNames']['throttling_key']
+    throttle_time = config['FlagsNames']['throttle_time']
 
     async def __call__(
             self,
@@ -26,8 +30,8 @@ class ThrottlingMiddleware(BaseMiddleware):
         if not throttling_flags:
             raise NoFoundRateLimitFlagError()
 
-        throttling_key = throttling_flags['throttling_key']
-        throttle_time = throttling_flags['throttle_time']
+        throttling_key = throttling_flags[self.throttling_key]
+        throttle_time = throttling_flags[self.throttle_time]
 
         if f'{throttling_key}_{throttle_time}' not in self.caches:
             self.caches[f'{throttling_key}_{throttle_time}'] = TTLCache(

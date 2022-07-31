@@ -8,3 +8,4 @@ psycopg2==2.9.3
 asyncpg==0.26.0
 # asyncache==0.1.1
 cashews==4.6.0
+glQiwiApi==2.12

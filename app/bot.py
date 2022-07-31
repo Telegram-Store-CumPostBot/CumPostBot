@@ -1,6 +1,10 @@
 import ssl
 
 from cashews import cache
+from glQiwiApi import QiwiWallet
+from glQiwiApi.core.event_fetching.dispatcher import QiwiDispatcher
+from glQiwiApi.core.event_fetching.executor import configure_app_for_qiwi_webhooks
+from glQiwiApi.core.event_fetching.webhooks.config import WebhookConfig, EncryptionConfig, HookRegistrationConfig
 
 from handlers import global_router
 
@@ -86,12 +90,29 @@ def main():
     dp = Dispatcher(storage=storage)
     dp.startup.register(on_startup)
 
+    qiwi_wallet = QiwiWallet(api_access_token=settings.qiwi_access_token)
+    qiwi_dp = QiwiDispatcher()
+
     logger.info('Сonfiguring web app')
     logger.info('Creating SSL context...')
 
     app = web.Application()
     SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
     setup_application(app, dp, bot=bot)
+
+    qiwi_webhook_cfg = WebhookConfig(
+            encryption=EncryptionConfig(
+                secret_p2p_key=settings.qiwi_secret_p2p_token
+            ),
+            hook_registration=HookRegistrationConfig(host_or_ip_address=settings.tg_bot_webhook_host)
+        )
+
+    app = configure_app_for_qiwi_webhooks(
+        wallet=qiwi_wallet,
+        dispatcher=qiwi_dp,
+        app=app,
+        cfg=qiwi_webhook_cfg
+    )
 
     context = None
     if settings.production:

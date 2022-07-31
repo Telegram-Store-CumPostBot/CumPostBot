@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     tg_bot_webhook_port: int
     tg_bot_webhook_path: str
 
+    qiwi_access_token: str
+    qiwi_secret_p2p_token: str
+
     webhook_ssl_cert: str
     webhook_ssl_priv: str
 
