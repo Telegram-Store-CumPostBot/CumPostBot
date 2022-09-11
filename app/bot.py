@@ -101,22 +101,22 @@ def main():
     logger.info('Creating SSL context...')
 
     app = web.Application()
-    qiwi_webhook_cfg = WebhookConfig(
-            encryption=EncryptionConfig(
-                secret_p2p_key=settings.qiwi_secret_p2p_token
-            ),
-            hook_registration=HookRegistrationConfig(host_or_ip_address=''
-                                                                        '31.172.133.73')
-        )
+    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
+    setup_application(app, dp, bot=bot)
+
+    # qiwi_webhook_cfg =
 
     app = configure_app_for_qiwi_webhooks(
         wallet=qiwi_wallet,
         dispatcher=qiwi_dp,
         app=app,
-        cfg=qiwi_webhook_cfg
+        cfg=WebhookConfig(
+            encryption=EncryptionConfig(
+                secret_p2p_key=settings.qiwi_secret_p2p_token
+            ),
+            hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}:8080')
+        )
     )
-    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
-    setup_application(app, dp, bot=bot)
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
