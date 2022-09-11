@@ -10,3 +10,23 @@ services:
 #      - ./docker_data/postgres/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    command: ["postgres", "-c", "log_statement=all"]
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    environment:
+      - "RABBITMQ_DEFAULT_USER=user"
+      - "RABBITMQ_DEFAULT_PASS=user"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./docker_data/rabbitmq/data/:/var/lib/rabbitmq/mnesia
+      - ./docker_data/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - rabbitmq_go_net
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge

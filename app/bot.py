@@ -8,10 +8,10 @@ from glQiwiApi.core.event_fetching.webhooks.config import WebhookConfig, Encrypt
 
 from handlers import global_router
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 from pyngrok import ngrok
 from aiogram import Bot, Dispatcher
-from aiogram.types import MenuButtonWebApp, WebAppInfo
+from aiogram.types import MenuButtonWebApp, WebAppInfo, InputFile
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
@@ -44,28 +44,32 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     register_all_filters(dispatcher)
     register_all_handlers(dispatcher)
 
-    certificate = None
-    if settings.production:
-        certificate = open(settings.webhook_ssl_cert, 'rb')
+    # certificate = open(settings.webhook_ssl_cert, 'rb')
 
     url = f'https://{settings.tg_bot_webhook_host}:{settings.tg_bot_webhook_port}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
-    if not settings.production:
-        logger.info('Connecting to ngrok...')
-        ngrok.set_auth_token(settings.ngrok_token)
-        http_tunnel = ngrok.connect(bind_tls=True)
-        logger.info('Was connect to ngrok')
-        url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
+    files = {
+        'url': url,
+        'certificate': open(settings.webhook_ssl_cert, 'rb'),
+    }
+
+    await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
+    # if not settings.production:
+    #     logger.info('Connecting to ngrok...')
+    #     ngrok.set_auth_token(settings.ngrok_token)
+    #     http_tunnel = ngrok.connect(bind_tls=True)
+    #     logger.info('Was connect to ngrok')
+    #     url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
 
     logger.debug(url)
-    await bot.set_webhook(
-        url=url,
-        certificate=certificate,
-        drop_pending_updates=True,
-    )
-    await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
-        text='Магазин',
-        web_app=WebAppInfo(url='https://vk.com')
-    ))
+    # await bot.set_webhook(
+    #     url=url,
+    #     certificate=certificate,
+    #     drop_pending_updates=True,
+    # )
+    # await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
+    #     text='Магазин',
+    #     web_app=WebAppInfo(url='https://vk.com')
+    # ))
 
     logger.info('Web app was run')
     logger.info('Bot stated!')
@@ -97,14 +101,12 @@ def main():
     logger.info('Creating SSL context...')
 
     app = web.Application()
-    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
-    setup_application(app, dp, bot=bot)
-
     qiwi_webhook_cfg = WebhookConfig(
             encryption=EncryptionConfig(
                 secret_p2p_key=settings.qiwi_secret_p2p_token
             ),
-            hook_registration=HookRegistrationConfig(host_or_ip_address=settings.tg_bot_webhook_host)
+            hook_registration=HookRegistrationConfig(host_or_ip_address=''
+                                                                        '31.172.133.73')
         )
 
     app = configure_app_for_qiwi_webhooks(
@@ -113,11 +115,11 @@ def main():
         app=app,
         cfg=qiwi_webhook_cfg
     )
+    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
+    setup_application(app, dp, bot=bot)
 
-    context = None
-    if settings.production:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
 
     logger.info('SSL context was created')
     logger.info('Web app was configuring')
@@ -126,11 +128,9 @@ def main():
 
     webapp_host = '0.0.0.0'
     webapp_port = settings.tg_bot_webhook_port
-    if not settings.production:
-        webapp_host = 'localhost'
-        webapp_port = 80
 
     web.run_app(app, host=webapp_host, port=webapp_port, ssl_context=context)
+    # web.run_app(app, host=webapp_host, port=webapp_port)
 
 
 if __name__ == '__main__':

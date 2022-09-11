@@ -8,7 +8,8 @@ def get_logger(name: str) -> logging.Logger:
 
     cls_handler = logging.StreamHandler()
     cls_handler.setFormatter(formatter)
-    cls_handler.setLevel(logging.DEBUG if not settings.production else logging.WARNING)
+    # cls_handler.setLevel(logging.DEBUG if not settings.production else logging.WARNING)
+    cls_handler.setLevel(logging.DEBUG)
 
     file_handler = logging.FileHandler(settings.logging_file_name)
     file_handler.setFormatter(formatter)
