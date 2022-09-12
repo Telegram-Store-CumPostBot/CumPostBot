@@ -47,12 +47,12 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     certificate = open(settings.webhook_ssl_cert, 'rb')
 
     url = f'https://{settings.tg_bot_webhook_host}:{settings.tg_bot_webhook_port}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
-    # files = {
-    #     'url': url,
-    #     'certificate': open(settings.webhook_ssl_cert, 'rb'),
-    # }
+    files = {
+        'url': url,
+        'certificate': open(settings.webhook_ssl_cert, 'rb'),
+    }
     # temp_session = ClientSession()
-    # await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
+    await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
     # await temp_session.close()
     # if not settings.production:
     #     logger.info('Connecting to ngrok...')
@@ -62,11 +62,11 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     #     url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
 
     logger.debug(url)
-    await bot.set_webhook(
-        url=url,
-        certificate=certificate,
-        drop_pending_updates=True,
-    )
+    # await bot.set_webhook(
+    #     url=url,
+    #     certificate=certificate,
+    #     drop_pending_updates=True,
+    # )
     # await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
     #     text='Магазин',
     #     web_app=WebAppInfo(url='https://vk.com')
