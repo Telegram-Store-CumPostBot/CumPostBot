@@ -51,8 +51,9 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
         'url': url,
         'certificate': open(settings.webhook_ssl_cert, 'rb'),
     }
-
-    await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
+    temp_session = ClientSession()
+    await temp_session.post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
+    await temp_session.close()
     # if not settings.production:
     #     logger.info('Connecting to ngrok...')
     #     ngrok.set_auth_token(settings.ngrok_token)
@@ -94,8 +95,8 @@ def main():
     dp = Dispatcher(storage=storage)
     dp.startup.register(on_startup)
 
-    qiwi_wallet = QiwiWallet(api_access_token=settings.qiwi_access_token)
-    qiwi_dp = QiwiDispatcher()
+    # qiwi_wallet = QiwiWallet(api_access_token=settings.qiwi_access_token)
+    # qiwi_dp = QiwiDispatcher()
 
     logger.info('Сonfiguring web app')
     logger.info('Creating SSL context...')
@@ -106,17 +107,17 @@ def main():
 
     # qiwi_webhook_cfg =
 
-    app = configure_app_for_qiwi_webhooks(
-        wallet=qiwi_wallet,
-        dispatcher=qiwi_dp,
-        app=app,
-        cfg=WebhookConfig(
-            encryption=EncryptionConfig(
-                secret_p2p_key=settings.qiwi_secret_p2p_token
-            ),
-            hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}:8080')
-        )
-    )
+    # app = configure_app_for_qiwi_webhooks(
+    #     wallet=qiwi_wallet,
+    #     dispatcher=qiwi_dp,
+    #     app=app,
+    #     cfg=WebhookConfig(
+    #         encryption=EncryptionConfig(
+    #             secret_p2p_key=settings.qiwi_secret_p2p_token
+    #         ),
+    #         hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}:8080')
+    #     )
+    # )
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
