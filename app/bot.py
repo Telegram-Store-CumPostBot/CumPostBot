@@ -1,5 +1,6 @@
 import ssl
 
+import requests as requests
 from cashews import cache
 from glQiwiApi import QiwiWallet
 from glQiwiApi.core.event_fetching.dispatcher import QiwiDispatcher
@@ -48,11 +49,12 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
     url = f'https://{settings.tg_bot_webhook_host}:{settings.tg_bot_webhook_port}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
     files = {
-        'url': url,
-        'certificate': open(settings.webhook_ssl_cert, 'rb'),
+        'url': (None, url),
+        'certificate': certificate,
     }
     # temp_session = ClientSession()
-    await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
+    r = requests.post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
+    # await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
     # await temp_session.close()
     # if not settings.production:
     #     logger.info('Connecting to ngrok...')
