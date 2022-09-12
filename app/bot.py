@@ -51,9 +51,9 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
         'url': url,
         'certificate': open(settings.webhook_ssl_cert, 'rb'),
     }
-    temp_session = ClientSession()
-    await temp_session.post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
-    await temp_session.close()
+    # temp_session = ClientSession()
+    await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', data=files)
+    # await temp_session.close()
     # if not settings.production:
     #     logger.info('Connecting to ngrok...')
     #     ngrok.set_auth_token(settings.ngrok_token)
