@@ -64,7 +64,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     logger.debug(url)
     await bot.set_webhook(
         url=url,
-        # certificate=certificate,
+        certificate=certificate,
         drop_pending_updates=True,
     )
     # await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
@@ -130,8 +130,8 @@ def main():
     webapp_host = '0.0.0.0'
     webapp_port = settings.tg_bot_webhook_port
 
-    # web.run_app(app, host=webapp_host, port=webapp_port, ssl_context=context)
-    web.run_app(app, host=webapp_host, port=webapp_port)
+    web.run_app(app, host=webapp_host, port=webapp_port, ssl_context=context)
+    # web.run_app(app, host=webapp_host, port=webapp_port)
 
 
 if __name__ == '__main__':
