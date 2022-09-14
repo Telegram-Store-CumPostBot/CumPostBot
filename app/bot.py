@@ -104,11 +104,6 @@ def main():
     logger.info('Creating SSL context...')
 
     app = web.Application()
-    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
-    setup_application(app, dp, bot=bot)
-
-    # qiwi_webhook_cfg =
-
     app = configure_app_for_qiwi_webhooks(
         wallet=qiwi_wallet,
         dispatcher=qiwi_dp,
@@ -120,6 +115,13 @@ def main():
             hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}')
         )
     )
+
+    SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
+    setup_application(app, dp, bot=bot)
+
+    # qiwi_webhook_cfg =
+
+
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)
