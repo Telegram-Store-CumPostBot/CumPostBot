@@ -112,7 +112,7 @@ def main():
             encryption=EncryptionConfig(
                 secret_p2p_key=settings.qiwi_secret_p2p_token
             ),
-            hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}')
+            hook_registration=HookRegistrationConfig(host_or_ip_address=f'{settings.tg_bot_webhook_host}:8080')
         )
     )
 
