@@ -2,7 +2,7 @@ import ssl
 
 import requests as requests
 from cashews import cache
-from glQiwiApi import QiwiWallet
+from glQiwiApi import QiwiWallet, QiwiWrapper
 from glQiwiApi.core.event_fetching.dispatcher import QiwiDispatcher
 from glQiwiApi.core.event_fetching.executor import configure_app_for_qiwi_webhooks
 from glQiwiApi.core.event_fetching.webhooks.config import WebhookConfig, EncryptionConfig, HookRegistrationConfig
@@ -80,7 +80,7 @@ def main():
 
     logger.info("Starting bot")
     storage = MemoryStorage()
-    bot = Bot(token=settings.tg_bot_token)
+    bot = Bot(token=settings.tg_bot_token, qiwi_wrapper=QiwiWrapper(settings.qiwi_access_token, settings.qiwi_phone))
     dp = Dispatcher(storage=storage)
     dp.startup.register(on_startup)
 

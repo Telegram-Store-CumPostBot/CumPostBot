@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     qiwi_access_token: str
     qiwi_public_p2p_token: str
     qiwi_secret_p2p_token: str
+    qiwi_phone: str
 
     webhook_ssl_cert: str
     webhook_ssl_priv: str
