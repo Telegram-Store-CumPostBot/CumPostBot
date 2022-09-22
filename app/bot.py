@@ -11,7 +11,8 @@ from handlers import global_router
 
 from aiohttp import web, ClientSession
 from pyngrok import ngrok
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
+from update_aiogram.client.bot import Bot
 from aiogram.types import MenuButtonWebApp, WebAppInfo, InputFile
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.webhook.aiohttp_server import SimpleRequestHandler, setup_application
@@ -52,23 +53,9 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
         'url': (None, url),
         'certificate': certificate,
     }
-    # temp_session = ClientSession()
-    r = requests.post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
-    # await ClientSession().post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
-    # await temp_session.close()
-    # if not settings.production:
-    #     logger.info('Connecting to ngrok...')
-    #     ngrok.set_auth_token(settings.ngrok_token)
-    #     http_tunnel = ngrok.connect(bind_tls=True)
-    #     logger.info('Was connect to ngrok')
-    #     url = f'{http_tunnel.public_url}{settings.tg_bot_webhook_path}/{settings.tg_bot_token}'
+    requests.post(f'https://api.telegram.org/bot{settings.tg_bot_token}/setWebhook', files=files)
 
     logger.debug(url)
-    # await bot.set_webhook(
-    #     url=url,
-    #     certificate=certificate,
-    #     drop_pending_updates=True,
-    # )
     # await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
     #     text='Магазин',
     #     web_app=WebAppInfo(url='https://vk.com')
@@ -104,24 +91,8 @@ def main():
     logger.info('Creating SSL context...')
 
     app = web.Application()
-    app = configure_app_for_qiwi_webhooks(
-        wallet=qiwi_wallet,
-        dispatcher=qiwi_dp,
-        app=app,
-        cfg=WebhookConfig(
-            encryption=EncryptionConfig(
-                secret_p2p_key=settings.qiwi_secret_p2p_token
-            ),
-            hook_registration=HookRegistrationConfig(host_or_ip_address=f'https://{settings.tg_bot_webhook_host}')
-        )
-    )
-
     SimpleRequestHandler(dispatcher=dp, bot=bot).register(app, path=f'/webhook/{settings.tg_bot_token}')
     setup_application(app, dp, bot=bot)
-
-    # qiwi_webhook_cfg =
-
-
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(settings.webhook_ssl_cert, settings.webhook_ssl_priv)

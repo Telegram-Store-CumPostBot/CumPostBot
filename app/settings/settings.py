@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     tg_bot_webhook_path: str
 
     qiwi_access_token: str
+    qiwi_public_p2p_token: str
     qiwi_secret_p2p_token: str
 
     webhook_ssl_cert: str
