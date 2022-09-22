@@ -6,20 +6,14 @@ from aiogram import flags
 
 from middlewares.middlewares_settings import ThrottlingSettings
 from mixins.FSMHandlerMixin import FSMHandlerMixin
-from update_aiogram.client.bot import Bot
+from mixins.UpdateBotMixin import UpdateBotMixin
 
 
 @flags.rate_limit(ThrottlingSettings.DEFAULT_FLAGS)
-class MessageHandlerTemplate(MessageHandler, FSMHandlerMixin, ABC):
+class MessageHandlerTemplate(MessageHandler, FSMHandlerMixin, UpdateBotMixin, ABC):
     @abstractmethod
     async def work(self) -> Any:
         pass
 
     async def handle(self) -> Any:
         await self.work()
-
-    @property
-    def bot(self) -> Bot:
-        if "bot" in self.data:
-            return cast(Bot, self.data["bot"])
-        return Bot.get_current(no_error=False)
