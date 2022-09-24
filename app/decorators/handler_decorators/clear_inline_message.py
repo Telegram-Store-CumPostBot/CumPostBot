@@ -9,6 +9,16 @@ def clear_inline_message(cls):
         def __getattribute__(self, item):
             print(f'{item=}')
             print('start get attribute')
+            # метод этого класса или нет
+            try:
+                x = self.__getattribute__(item)
+            except AttributeError:
+                pass
+            else:
+                return x
+
+            # если просят handle, то оборачиваем его,
+            # иначе просто возвращаем метод декорируемого хендлера
             if item != 'handle':
                 print('attribute in`t handle')
                 return self.__get_attr_subclass(item)
