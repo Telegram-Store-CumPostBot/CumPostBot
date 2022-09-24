@@ -13,7 +13,8 @@ from settings.settings import config
 router = Router()
 
 profile_template = Template(
-    '''◉───────────────◉
+    '''
+◉───────────────◉
  │  🆔*Ваш ID*: `$id`            
  │  💰*Баланс:* `$balance`                       
  │                             
@@ -29,7 +30,6 @@ profile_template = Template(
 @flags.rate_limit({config['FlagsNames']['throttling_key']: 'profile', config['FlagsNames']['throttle_time']: 1})
 class ProfileHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
-        print(self.bot.qiwi_wrapper)
         log = get_logger(__name__)
         log.info('in bot_id=%d user with username=%s and chat_id=%d logged in to the profile', self.bot.id, self.chat.username, self.chat.id)
 

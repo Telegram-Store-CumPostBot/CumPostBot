@@ -1,5 +1,5 @@
-from abc import ABC
-from typing import cast
+from abc import ABC, abstractmethod
+from typing import cast, Any
 
 from aiogram.dispatcher.handler import MessageHandler
 
@@ -12,3 +12,10 @@ class CustomMessageHandler(MessageHandler, ABC):
         if "bot" in self.data:
             return cast(Bot, self.data["bot"])
         return Bot.get_current(no_error=False)
+
+    @abstractmethod
+    async def work(self) -> Any:
+        pass
+
+    async def handle(self) -> Any:
+        await self.work()
