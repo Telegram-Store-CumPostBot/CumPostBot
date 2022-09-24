@@ -30,7 +30,9 @@ def clear_inline_message(cls):
                 return self.__new_handle
 
         def __get_attr_subclass(self, item):
-            return self.__handler.__getattribute__(item)
+            attr = self.__handler.__getattribute__(item)
+            print(f'{attr=}')
+            return attr
 
         async def __new_handle(self):
             print('new handle')
