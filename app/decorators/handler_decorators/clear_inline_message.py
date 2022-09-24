@@ -1,58 +1,50 @@
+import asyncio
+
 from aiogram.dispatcher.handler import BaseHandler
 
 from handlers.custom_base_handlers import CustomMessageHandler
 
 
 def clear_inline_message(cls):
+    """Декоратор над хендлером, который вызывает все колбеки из
+    хранилища диалога с пользователем под ключем 'clear_inline_messages'"""
+    # наследуемся от BaseHandler для того, чтобы проходила проверка
+    # aiogram.event.handler.HandlerObject.__post_init__ {
+    #   if inspect.isclass(callback) and issubclass(callback, BaseHandler)
+    # }
+    # иначе не работает почему-то(((
+    # BaseHandler.init скипнул за ненадобностью
+    # handle нужно определить, чтобы ABC не ругался
     class ClearInlineMessage(BaseHandler):
         def __init__(self, *args, **kwargs):
             self.__handler: CustomMessageHandler = cls(*args, **kwargs)
 
         def __getattribute__(self, item):
-            print(f'{item=}')
-            print('start get attribute')
             # метод этого класса или нет
             try:
                 x = super().__getattribute__(item)
             except AttributeError:
-                print('метод не из этого класса')
                 pass
             else:
-                print('метод из этого класса')
-                print(f'{x=}')
                 return x
 
             # если просят handle, то оборачиваем его,
             # иначе просто возвращаем метод декорируемого хендлера
             if item != 'handle':
-                print('attribute in`t handle')
-                attr = self.__handler.__getattribute__(item)
-                print(f'{attr=}')
-                return attr
+                return self.__handler.__getattribute__(item)
             else:
-                print('attribute is handle')
                 self.__clear()
-                return self.__new_handle
-
-        def __get_attr_subclass(self, item):
-            attr = self.__handler.__getattribute__(item)
-            print(f'{attr=}')
-            return attr
+                return self.handle
 
         async def handle(self):
-            print('new handle')
             await self.__clear()
             await self.__handler.handle()
 
         async def __clear(self):
-            print('clear message')
             callbacks = self.__handler.data.get('clear_inline_messages')
             if not callbacks:
-                print('not callbacks')
                 return
-
-            print('await callbacks')
-            for clear in callbacks:
-                await clear()
+            await asyncio.gather(*callbacks)
+            self.__handler.data['clear_inline_messages'] = []
 
     return ClearInlineMessage
