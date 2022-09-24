@@ -5,6 +5,7 @@ from aiogram import Router, flags
 from aiogram.dispatcher.filters import Text
 
 from database.models.customer import Customer
+from decorators.handler_decorators.clear_inline_message import clear_inline_message
 from handlers.handlers_templates import MessageHandlerTemplate
 from logger import get_logger
 from settings.message_constants import PROFILE
@@ -28,6 +29,7 @@ profile_template = Template(
 
 @router.message(Text(text=[PROFILE]))
 @flags.rate_limit({config['FlagsNames']['throttling_key']: 'profile', config['FlagsNames']['throttle_time']: 1})
+@clear_inline_message
 class ProfileHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
