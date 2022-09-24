@@ -23,7 +23,9 @@ def clear_inline_message(cls):
             # иначе просто возвращаем метод декорируемого хендлера
             if item != 'handle':
                 print('attribute in`t handle')
-                return self.__get_attr_subclass(item)
+                attr = self.__handler.__getattribute__(item)
+                print(f'{attr=}')
+                return attr
             else:
                 print('attribute is handle')
                 self.__clear()
