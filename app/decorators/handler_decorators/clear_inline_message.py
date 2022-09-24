@@ -1,8 +1,10 @@
+from aiogram.dispatcher.handler import BaseHandler
+
 from handlers.custom_base_handlers import CustomMessageHandler
 
 
 def clear_inline_message(cls):
-    class ClearInlineMessage:
+    class ClearInlineMessage(BaseHandler):
         def __init__(self, *args, **kwargs):
             self.__handler: CustomMessageHandler = cls(*args, **kwargs)
 
@@ -17,6 +19,7 @@ def clear_inline_message(cls):
                 pass
             else:
                 print('метод из этого класса')
+                print(f'{x=}')
                 return x
 
             # если просят handle, то оборачиваем его,
@@ -36,7 +39,7 @@ def clear_inline_message(cls):
             print(f'{attr=}')
             return attr
 
-        async def __new_handle(self):
+        async def handle(self):
             print('new handle')
             await self.__clear()
             await self.__handler.handle()
