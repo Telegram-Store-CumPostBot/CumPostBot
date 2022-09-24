@@ -1,3 +1,4 @@
+from collections import namedtuple
 from string import Template
 from typing import Any
 
@@ -25,6 +26,12 @@ profile_template = Template(
 ◉───────────────◉
     '''
 )
+
+
+Message = namedtuple('Message', [
+    'chat_id',
+    'message_id'
+])
 
 
 @router.message(Text(text=[PROFILE]))
@@ -56,7 +63,7 @@ class ProfileHandler(MessageHandlerTemplate):
         )
         print(self.bot.deleted_messages.get(self.from_user.id))
         deleted_messages = self.bot.deleted_messages.get(self.from_user.id, [])
-        deleted_messages.append(msg.delete())
+        deleted_messages.append(Message(msg.chat.id, msg.message_id))
         self.bot.deleted_messages[self.from_user.id] = deleted_messages
         print(deleted_messages)
         return msg
