@@ -42,8 +42,7 @@ class ProfileHandler(MessageHandlerTemplate):
 
         user: dict = await Customer.get_static_info(self.chat.id, self.bot.id)
         user.update(await Customer.get_balance(self.chat.id, self.bot.id))
-
-        return await self.event.answer(
+        msg = await self.event.answer(
             text=profile_template.substitute(
                 {
                     'balance': user['balance'] + user['fake_balance'],
@@ -55,3 +54,7 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
+        if not self.data.get('clear_inline_messages'):
+            self.data['clear_inline_messages'] = []
+        self.data['clear_inline_messages'].append(msg.delete())
+        return msg
