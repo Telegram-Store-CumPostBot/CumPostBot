@@ -11,7 +11,7 @@ def clear_inline_message(cls):
             print('start get attribute')
             # метод этого класса или нет
             try:
-                x = self.__getattribute__(item)
+                x = super().__getattribute__(item)
             except AttributeError:
                 pass
             else:
