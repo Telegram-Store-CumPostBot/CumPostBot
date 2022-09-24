@@ -42,7 +42,7 @@ def clear_inline_message(cls):
 
         async def __clear(self):
             print('in clear')
-            callbacks = self.__handler.bot.deleted_messages[self.__handler.from_user.id]
+            callbacks = self.__handler.bot.deleted_messages.get(self.__handler.from_user.id)
             print(callbacks)
             if not callbacks:
                 return
