@@ -41,6 +41,7 @@ def clear_inline_message(cls):
             await self.__handler.handle()
 
         async def __clear(self):
+            print('in clear')
             callbacks = self.__handler.data.get('clear_inline_messages')
             if not callbacks:
                 return
