@@ -54,7 +54,7 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
-        print(self.bot.deleted_messages[self.from_user.id])
+        print(self.bot.deleted_messages.get(self.from_user.id))
         deleted_messages = self.bot.deleted_messages.get(self.from_user.id, [])
         deleted_messages.append(msg.delete())
         self.bot.deleted_messages[self.from_user.id] = deleted_messages
