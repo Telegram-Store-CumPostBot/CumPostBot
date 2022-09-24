@@ -7,22 +7,33 @@ def clear_inline_message(cls):
             self.__handler: CustomMessageHandler = cls(*args, **kwargs)
 
         def __getattribute__(self, item):
+            print(f'{item=}')
+            print('start get attribute')
             if item != 'handle':
+                print('attribute in`t handle')
                 return self.__get_attr_subclass(item)
             else:
+                print('attribute is handle')
                 self.__clear()
-                return self.__handler.handle
+                return self.__new_handle
 
         def __get_attr_subclass(self, item):
             return self.__handler.__getattribute__(item)
 
-        def __clear(self):
-            print('gay')
+        async def __new_handle(self):
+            print('new handle')
+            await self.__clear()
+            await self.__handler.handle()
+
+        async def __clear(self):
+            print('clear message')
             callbacks = self.__handler.data.get('clear_inline_messages')
             if not callbacks:
+                print('not callbacks')
                 return
 
+            print('await callbacks')
             for clear in callbacks:
-                clear()
+                await clear()
 
     return ClearInlineMessage
