@@ -13,8 +13,10 @@ def clear_inline_message(cls):
             try:
                 x = super().__getattribute__(item)
             except AttributeError:
+                print('метод не из этого класса')
                 pass
             else:
+                print('метод из этого класса')
                 return x
 
             # если просят handle, то оборачиваем его,
