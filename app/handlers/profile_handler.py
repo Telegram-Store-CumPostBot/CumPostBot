@@ -54,9 +54,9 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
-        print(self.data.get('clear_inline_messages'))
-        if not self.data.get('clear_inline_messages'):
-            self.data['clear_inline_messages'] = []
-        self.data['clear_inline_messages'].append(msg.delete())
-        print(self.data.get('clear_inline_messages'))
+        print(self.bot.deleted_messages[self.from_user.id])
+        deleted_messages = self.bot.deleted_messages.get(self.from_user.id, [])
+        deleted_messages.append(msg.delete())
+        self.bot.deleted_messages[self.from_user.id] = deleted_messages
+        print(deleted_messages)
         return msg
