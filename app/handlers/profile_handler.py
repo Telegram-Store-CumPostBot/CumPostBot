@@ -54,7 +54,9 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
+        print(self.data.get('clear_inline_messages'))
         if not self.data.get('clear_inline_messages'):
             self.data['clear_inline_messages'] = []
         self.data['clear_inline_messages'].append(msg.delete())
+        print(self.data.get('clear_inline_messages'))
         return msg
