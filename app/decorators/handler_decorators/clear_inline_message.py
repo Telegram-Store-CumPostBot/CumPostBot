@@ -44,6 +44,7 @@ def clear_inline_message(cls):
             callbacks = self.__handler.data.get('clear_inline_messages')
             if not callbacks:
                 return
+            print('clearing')
             await asyncio.gather(*callbacks)
             self.__handler.data['clear_inline_messages'] = []
 
