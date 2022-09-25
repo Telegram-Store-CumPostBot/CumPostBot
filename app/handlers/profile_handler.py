@@ -39,7 +39,6 @@ Message = namedtuple('Message', [
 @clear_inline_message
 class ProfileHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
-
         log = get_logger(__name__)
         log.info('in bot_id=%d user with username=%s and chat_id=%d logged in to the profile', self.bot.id, self.chat.username, self.chat.id)
 
@@ -50,6 +49,7 @@ class ProfileHandler(MessageHandlerTemplate):
 
         user: dict = await Customer.get_static_info(self.chat.id, self.bot.id)
         user.update(await Customer.get_balance(self.chat.id, self.bot.id))
+
         msg = await self.event.answer(
             text=profile_template.substitute(
                 {
@@ -62,10 +62,8 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
-        print(self.bot.deleted_messages.get(self.from_user.id))
         deleted_messages = self.bot.deleted_messages.get(self.from_user.id, [])
         deleted_messages.append(Message(msg.chat.id, msg.message_id))
         deleted_messages.append(Message(msg.chat.id, self.event.message_id))
         self.bot.deleted_messages[self.from_user.id] = deleted_messages
-        print(deleted_messages)
         return msg
