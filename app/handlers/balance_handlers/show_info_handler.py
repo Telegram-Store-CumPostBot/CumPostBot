@@ -7,7 +7,7 @@ from database.models.customer import Customer
 from keyboards.main_menu_keyboard import MainMenuKeyboard
 from logger import get_logger
 
-from handlers.handlers_templates import MessageHandlerTemplate
+from handlers.template_handlers.message_handler_template import MessageHandlerTemplate
 from settings.message_constants import BALANCE_INFO
 
 router = Router()

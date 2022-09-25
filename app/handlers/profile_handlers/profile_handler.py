@@ -7,7 +7,7 @@ from aiogram.dispatcher.filters import Text
 
 from database.models.customer import Customer
 from decorators.handler_decorators.clear_inline_message import clear_inline_message
-from handlers.handlers_templates import MessageHandlerTemplate
+from handlers.template_handlers.message_handler_template import MessageHandlerTemplate
 from logger import get_logger
 from settings.message_constants import PROFILE
 from settings.settings import config
