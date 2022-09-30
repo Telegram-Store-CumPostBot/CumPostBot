@@ -1,4 +1,6 @@
 from database.engine import engine, Base
+from database.models.tables.tg_bot import TGBot
+from database.models.tables.customer import Customer
 
 
 async def init_models(drop=False):
