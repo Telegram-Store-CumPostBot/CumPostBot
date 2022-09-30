@@ -7,7 +7,8 @@ from sqlalchemy import (
     String,
     ForeignKey,
     text,
-    UniqueConstraint
+    UniqueConstraint,
+    BigInteger
 )
 from sqlalchemy.orm import relationship
 
@@ -32,7 +33,7 @@ class Customer(Base):
     ref_customer_id: Optional[int] = Column(Integer, ForeignKey(ref_key))
     referrals: Optional[int] = relationship('Customer')
 
-    tg_bot_id: Optional[int] = Column(Integer, ForeignKey('tg_bots.tg_bot_id'))
+    tg_bot_id: int = Column(BigInteger, ForeignKey('tg_bots.tg_bot_id'))
 
     __table_args__ = (
         UniqueConstraint(chat_id, tg_bot_id, name='idx_chat_id_tg_bot_id'),
