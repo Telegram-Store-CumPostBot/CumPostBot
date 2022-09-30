@@ -1,44 +1,18 @@
-from ormar import ModelMeta
-from databases import Database
-from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.engine.url import URL as DB_URL
-
-from settings.settings import settings
+from database.engine import engine, Base
 
 
-connection_url: DB_URL = DB_URL(drivername='postgresql',
-                                username=settings.pg_user,
-                                password=settings.pg_pass,
-                                host=settings.pg_host,
-                                port=settings.pg_port,
-                                database=settings.pg_db_name,
-                                )
+async def init_models(drop=False):
+    async with engine.begin() as conn:
+        if drop:
+            await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 
-Base = declarative_base()
-engine = create_engine(connection_url)
-
-# ормар берет либо str либо свой класс ссылки
-database = Database(connection_url.__str__())
-
-metadata = MetaData()
-
-
-class BaseMeta(ModelMeta):
-    metadata = metadata
-    database = database
-
-
-async def connect_to_database():
+async def connect_to_database(drop=False):
     while True:
         try:
-            metadata.create_all(engine)
+            await init_models(drop)
             break
-        except OperationalError:
+        except ZeroDivisionError:
+            print('find error')
             continue
-
-    if not database.is_connected:
-        await database.connect()

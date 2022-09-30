@@ -30,19 +30,19 @@ class ThrottlingMiddleware(BaseMiddleware):
         if not throttling_flags:
             raise NoFoundRateLimitFlagError()
 
-        throttling_key = throttling_flags[self.throttling_key]
+        throttle_key = throttling_flags[self.throttling_key]
         throttle_time = throttling_flags[self.throttle_time]
+        throttle_pattern = f'{throttle_key}_{throttle_time}'
 
-        if f'{throttling_key}_{throttle_time}' not in self.caches:
-            self.caches[f'{throttling_key}_{throttle_time}'] = TTLCache(
+        if throttle_pattern not in self.caches:
+            self.caches[throttle_pattern] = TTLCache(
                 maxsize=ThrottlingSettings.MAX_CACHE_SIZE,
                 ttl=throttle_time
             )
 
-        if event.chat.id in self.caches[f'{throttling_key}_{throttle_time}']:
+        if event.chat.id in self.caches[throttle_pattern]:
             log.info(f'Drop message by {event.chat.id}-{event.chat.username}')
             return
         else:
-            self.caches[f'{throttling_key}_{throttle_time}'][event.chat.id] = None
-
+            self.caches[throttle_pattern][event.chat.id] = None
         return await handler(event, data)

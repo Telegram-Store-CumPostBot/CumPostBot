@@ -8,4 +8,3 @@ class Wallet:
     @abstractmethod
     def __repr__(self):
         pass
-    

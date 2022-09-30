@@ -19,7 +19,10 @@ class RegularKeyboard(ABC):
     def _keyboard(self) -> List[List[KeyboardButton]]:
         pass
 
-    def get(self, resize_keyboard=True, one_time_keyboard=False) -> ReplyKeyboardMarkup:
+    def get(
+            self, resize_keyboard=True,
+            one_time_keyboard=False
+    ) -> ReplyKeyboardMarkup:
         return ReplyKeyboardMarkup(
             keyboard=self._keyboard,
             resize_keyboard=resize_keyboard,
@@ -33,8 +36,10 @@ class RegularKeyboard(ABC):
         keys = list(map(KeyboardButton, multiple_keys))
         if len(keys) < 1 or row_width < 2:
             return keys
-        # reverse the list so, the rows that are shorter that row_width come first
-        return [keys[key : key + row_width] for key in range(0, len(keys), row_width)][
+        # reverse the list so, the rows that
+        # are shorter that row_width come first
+        return [keys[key: key + row_width]
+                for key in range(0, len(keys), row_width)][
             ::-1
         ]
 

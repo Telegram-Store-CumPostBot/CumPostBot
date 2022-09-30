@@ -8,5 +8,10 @@ from mixins.handler_mixins.UpdateBotMixin import UpdateBotMixin
 
 
 @flags.rate_limit(ThrottlingSettings.DEFAULT_FLAGS)
-class MessageHandlerTemplate(CustomMessageHandler, FSMHandlerMixin, UpdateBotMixin, ABC):
+class MessageHandlerTemplate(
+    CustomMessageHandler,
+    FSMHandlerMixin,
+    UpdateBotMixin,
+    ABC
+):
     pass

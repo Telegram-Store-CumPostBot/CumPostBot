@@ -14,5 +14,6 @@ class Bot(AiogramBot):
             qiwi_wrapper: Optional[QiwiWrapper] = None,
     ) -> None:
         self.qiwi_wrapper = qiwi_wrapper
+
         self.deleted_messages = {}
         super().__init__(token, session, parse_mode)
