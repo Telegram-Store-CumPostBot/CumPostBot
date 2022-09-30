@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Text, Float, text, ForeignKey
 
-from database.connection import Base
+from database.engine import Base
 
 
 class Item(Base):

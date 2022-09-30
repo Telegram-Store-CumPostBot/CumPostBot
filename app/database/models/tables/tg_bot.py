@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, BigInteger
 
-from database.connection import Base
+from database.engine import Base
 
 
 class TGBot(Base):
