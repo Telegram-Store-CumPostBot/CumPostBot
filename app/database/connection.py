@@ -1,6 +1,7 @@
 from database.engine import engine, Base
 from database.models.tables.tg_bot import TGBot
 from database.models.tables.customer import Customer
+from database.models.tables.admin import Admin
 
 
 async def init_models(drop=False):
