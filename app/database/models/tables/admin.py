@@ -1,6 +1,6 @@
 from sqlalchemy import Index, Integer, Column, Float, text
 
-from app.database.engine import Base
+from database.engine import Base
 
 
 class Admin(Base):
