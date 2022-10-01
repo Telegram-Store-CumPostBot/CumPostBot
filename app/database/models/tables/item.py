@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, Text, Float, text, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -14,3 +15,4 @@ class Item(Base):
         Integer,
         ForeignKey('products.product_id'), index=True
     )
+    product = relationship('Product', backref='items')

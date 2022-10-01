@@ -19,7 +19,4 @@ class Product(Base):
         ForeignKey('product_versions.pv_id')
     )
     admin_id: int = Column(Integer, ForeignKey('admins.admin_id'), index=True)
-
-    items = relationship('Item')
-    versions = relationship('ProductVersion')
-    visible = relationship('ProductVisible')
+    admin = relationship('Admin', backref='products')

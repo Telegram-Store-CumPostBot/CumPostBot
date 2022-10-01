@@ -2,6 +2,7 @@ from typing import Optional
 
 from ormar import Integer
 from sqlalchemy import Column, Text, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -16,3 +17,4 @@ class ProductVersion(Base):
     extended_description: str = Column(Text, nullable=False)
 
     product_id: int = Column(Integer, ForeignKey('products.product_id'))
+    product = relationship('Product', backref='versions')

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -18,6 +19,7 @@ class QiwiPayroll(Base):
     commission: float = Column(Float, nullable=False)
 
     customer_id: int = Column(Integer, ForeignKey('customers.customer_id'))
+    customer = relationship('Customer', backref='qiwi_payrolls')
 
     def __repr__(self):
         return f'user={self.customer_id}, amount={self.amount}'
