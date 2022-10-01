@@ -41,12 +41,9 @@ def clear_inline_message(cls):
             await self.__handler.handle()
 
         async def __clear(self):
-            print('in clear')
             messages = self.__handler.bot.deleted_messages.get(self.__handler.from_user.id)
-            print(messages)
             if not messages:
                 return
-            print('clearing')
             tasks = [self.__handler.bot.delete_message(chat_id, message_id) for chat_id, message_id in messages]
             await asyncio.gather(*tasks)
             self.__handler.bot.deleted_messages[self.__handler.from_user.id] = []

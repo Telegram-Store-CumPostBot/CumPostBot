@@ -26,7 +26,7 @@ from middlewares.throttling import ThrottlingMiddleware
 
 
 async def register_bot_in_db(bot: Bot):
-    if not DBAPITGBot.check_availability(bot.id):
+    if not await DBAPITGBot.check_availability(bot.id):
         await DBAPITGBot.create_new(bot.id, bot.token)
 
 
