@@ -8,7 +8,7 @@ class BaseUser(BaseModel):
 
 class MoneyUserInfo(BaseUser):
     balance: float
-    fake_balance: float
+    fake_balance: float = Field(alias='fake_bal')
     sum_orders: float
     referral_fees: float = Field(alias='ref_fees')
 
