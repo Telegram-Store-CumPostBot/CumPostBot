@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BaseUser(BaseModel):
@@ -10,7 +10,7 @@ class MoneyUserInfo(BaseUser):
     balance: float
     fake_balance: float
     sum_orders: float
-    referral_fees: float
+    referral_fees: float = Field(alias='ref_fees')
 
     @property
     def total_balance(self):
@@ -21,4 +21,4 @@ class ProfileInfo(BaseUser):
     username: str
     first_name: str
     last_name: str
-    referrals_count: int
+    referrals_count: int = Field(alias='ref_count')
