@@ -35,6 +35,8 @@ class Customer(Base):
 
     tg_bot_id: int = Column(BigInteger, ForeignKey('tg_bots.tg_bot_id'))
 
+    qiwi_payrolls = relationship('QiwiPayroll')
+
     __table_args__ = (
         UniqueConstraint(chat_id, tg_bot_id, name='idx_chat_id_tg_bot_id'),
     )

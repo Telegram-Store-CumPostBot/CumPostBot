@@ -1,4 +1,5 @@
 from sqlalchemy import Index, Integer, Column, Float, text
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -13,3 +14,5 @@ class Admin(Base):
     __table_args__ = (
         Index('idx_chat_id', chat_id, porstgresql_using='btree'),
     )
+
+    products = relationship('Product')

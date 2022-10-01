@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -18,3 +19,7 @@ class Product(Base):
         ForeignKey('product_versions.pv_id')
     )
     admin_id: int = Column(Integer, ForeignKey('admins.admin_id'), index=True)
+
+    items = relationship('Item')
+    versions = relationship('ProductVersion')
+    visible = relationship('ProductVisible')
