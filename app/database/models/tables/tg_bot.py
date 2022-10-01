@@ -1,6 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, BigInteger
+from sqlalchemy.orm import relationship
 
 from database.engine import Base
 
@@ -13,4 +14,9 @@ class TGBot(Base):
     start_message: Optional[str] = Column(Text, nullable=True)
     qiwi_txn: Optional[int] = Column(Integer, nullable=True)
 
-    admin_id: int = Column(Integer, ForeignKey('admins.admin_id'))
+    admin_id: int = Column(
+        Integer,
+        ForeignKey('admins.admin_id'),
+        nullable=True
+    )
+    admin = relationship('Admin', backref='tg_bots')

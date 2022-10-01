@@ -42,4 +42,6 @@ async def create_new(
         user = Customer(**kwargs)
         session.add(user)
         await session.commit()
+    log.info('success create new user chat_id: %d bot_id: %d',
+             chat_id, tg_bot_id)
     return user

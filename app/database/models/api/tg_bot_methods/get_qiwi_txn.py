@@ -5,9 +5,12 @@ from sqlalchemy.sql import Select
 
 from database.engine import async_session
 from database.models.tables.tg_bot import TGBot
+from logger import get_logger
 
 
 async def get_qiwi_txn(tg_bot_id: int) -> Optional[int]:
+    log = get_logger(__name__)
+    log.info('get_qiwi_txn bot_id: %d', tg_bot_id)
     async with async_session() as session:
         query = query_get_qiwi_txn(tg_bot_id)
         res = await session.execute(query)

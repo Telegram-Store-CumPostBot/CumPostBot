@@ -19,10 +19,9 @@ async def check_availability(chat_id: int, bot_id: int) -> bool:
         res: Result = await session.execute(query)
 
     user = res.first()
-    print(user)
-    if user:
-        return True
-    return False
+    log.info('res check user availability chat_id: %d bot_id: %d',
+             chat_id, bot_id)
+    return bool(user)
 
 
 def query_check_availability(chat_id: int, bot_id: int) -> Select:

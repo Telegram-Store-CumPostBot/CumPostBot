@@ -7,6 +7,7 @@ from glQiwiApi.core.event_fetching.dispatcher import QiwiDispatcher
 from glQiwiApi.core.event_fetching.executor import configure_app_for_qiwi_webhooks
 from glQiwiApi.core.event_fetching.webhooks.config import WebhookConfig, EncryptionConfig, HookRegistrationConfig
 
+from database.models.api.tg_bot import DBAPITGBot
 from handlers import global_router
 
 from aiohttp import web, ClientSession
@@ -22,6 +23,11 @@ from database.connection import connect_to_database
 from settings.settings import settings
 
 from middlewares.throttling import ThrottlingMiddleware
+
+
+async def register_bot_in_db(bot: Bot):
+    if not DBAPITGBot.check_availability(bot.id):
+        await DBAPITGBot.create_new(bot.id, bot.token)
 
 
 def register_all_middlewares(dp: Dispatcher):
@@ -45,6 +51,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     register_all_middlewares(dispatcher)
     register_all_filters(dispatcher)
     register_all_handlers(dispatcher)
+    await register_bot_in_db(bot)
 
     certificate = open(settings.webhook_ssl_cert, 'rb')
 

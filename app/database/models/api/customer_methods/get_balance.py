@@ -24,6 +24,8 @@ async def get_balance(chat_id: int, bot_id: int) -> MoneyUserInfo:
         user = res.first()
 
     user = MoneyUserInfo(chat_id=chat_id, tg_bot_id=bot_id, **user)
+    log.info('user (chat_id: %d bot_id: %d) - balance: %d',
+             chat_id, bot_id, user.total_balance)
     return user
 
 
