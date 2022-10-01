@@ -1,5 +1,12 @@
 from database.engine import engine, Base
 
+from database.models.tables.admin import Admin
+from database.models.tables.tg_bot import TGBot
+from database.models.tables.customer import Customer
+# from database.models.tables. import
+# from database.models.tables. import
+# from database.models.tables. import
+
 
 async def init_models(drop=False):
     async with engine.begin() as conn:
