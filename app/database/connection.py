@@ -1,8 +1,8 @@
 from database.engine import engine, Base
 
-from database.models.tables.admin import Admin
-from database.models.tables.tg_bot import TGBot
-from database.models.tables.customer import Customer
+# from database.models.tables.admin import Admin
+# from database.models.tables.tg_bot import TGBot
+# from database.models.tables.customer import Customer
 # from database.models.tables. import
 # from database.models.tables. import
 # from database.models.tables. import
