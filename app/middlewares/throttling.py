@@ -42,6 +42,7 @@ class ThrottlingMiddleware(BaseMiddleware):
 
         if event.chat.id in self.caches[throttle_pattern]:
             log.info(f'Drop message by {event.chat.id}-{event.chat.username}')
+            await event.delete()
             return
         else:
             self.caches[throttle_pattern][event.chat.id] = None
