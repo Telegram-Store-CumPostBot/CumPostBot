@@ -27,7 +27,7 @@ async def check_availability(
 
 def query_check_availability(chat_id: int, bot_id: int) -> Select:
     query: Select = select(
-        Customer.customer_id
+        Customer.chat_id
     ).where(
         Customer.chat_id == chat_id,
         Customer.tg_bot_id == bot_id
