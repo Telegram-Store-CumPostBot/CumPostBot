@@ -55,7 +55,7 @@ class StartHandler(MessageHandlerTemplate):
         await DBAPICustomer.create_user(
             session=session,
             chat_id=self.chat.id,
-            bot_id=self.bot.id,
+            tg_bot_id=self.bot.id,
             username=self.chat.username,
             first_name=self.chat.first_name,
             last_name=self.chat.last_name,
