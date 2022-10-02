@@ -1,9 +1,17 @@
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, BigInteger
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Text,
+    BigInteger,
+    ForeignKeyConstraint,
+)
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.admin import Admin
 
 
 class TGBot(Base):
@@ -14,9 +22,10 @@ class TGBot(Base):
     start_message: Optional[str] = Column(Text, nullable=True)
     qiwi_txn: Optional[int] = Column(BigInteger, nullable=True)
 
-    admin_id: int = Column(
-        Integer,
-        ForeignKey('admins.chat_id'),
-        nullable=True
-    )
+    admin_id: int = Column(Integer, nullable=True)
     admin = relationship('Admin', backref='tg_bots')
+
+    __table_args__ = (
+        ForeignKeyConstraint((admin_id,),
+                             [Admin.chat_id])
+    )

@@ -14,5 +14,5 @@ class Admin(Base):
     )
 
     __table_args__ = (
-        Index('idx_chat_id', chat_id, porstgresql_using='btree'),
+        # Index('idx_chat_id', chat_id, porstgresql_using='btree'),
     )

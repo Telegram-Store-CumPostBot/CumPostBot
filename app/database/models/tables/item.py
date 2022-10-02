@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, Text, Float, text, ForeignKey
+from sqlalchemy import Column, Integer, Text, Float, text, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.product import Product
 
 
 class Item(Base):
@@ -15,8 +16,10 @@ class Item(Base):
         server_default=text('0')
     )
 
-    product_id: int = Column(
-        Integer,
-        ForeignKey('products.product_id'), index=True
+    product_id: int = Column(Integer, index=True)
+    product = relationship(Product.__name__, backref='items')
+
+    __table_args__ = (
+        ForeignKeyConstraint((product_id,),
+                             [Product.product_id])
     )
-    product = relationship('Product', backref='items')

@@ -1,10 +1,11 @@
 from typing import Optional
 
 from ormar import Integer
-from sqlalchemy import Column, Text, Float, ForeignKey
+from sqlalchemy import Column, Text, Float, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.product import Product
 
 
 class ProductVersion(Base):
@@ -22,5 +23,10 @@ class ProductVersion(Base):
     description: str = Column(Text, nullable=False)
     extended_description: str = Column(Text, nullable=False)
 
-    product_id: int = Column(Integer, ForeignKey('products.product_id'))
-    product = relationship('Product', backref='versions')
+    product_id: int = Column(Integer)
+    product = relationship(Product.__name__, backref='versions')
+
+    __table_args__ = (
+        ForeignKeyConstraint((product_id,),
+                             [Product.product_id])
+    )

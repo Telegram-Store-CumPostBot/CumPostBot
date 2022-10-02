@@ -1,9 +1,18 @@
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, ForeignKey, BigInteger
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    BigInteger,
+    ForeignKeyConstraint
+)
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.admin import Admin
+from database.models.tables.product_version import ProductVersion
 
 
 class Product(Base):
@@ -14,13 +23,14 @@ class Product(Base):
     photo_file: Optional[str] = Column(String(255), nullable=True)
     count: int = Column(Integer, nullable=False, default=0)
 
-    current_version_id = Column(
-        Integer,
-        ForeignKey('product_versions.pv_id')
+    current_version_id = Column(Integer)
+
+    admin_id: int = Column(BigInteger, index=True)
+    admin = relationship(Admin.__name__, backref='products')
+
+    __table_args__ = (
+        ForeignKeyConstraint((admin_id,),
+                             [Admin.chat_id]),
+        ForeignKeyConstraint((current_version_id,),
+                             [ProductVersion.pv_id]),
     )
-    admin_id: int = Column(
-        BigInteger,
-        ForeignKey('admins.chat_id'),
-        index=True
-    )
-    admin = relationship('Admin', backref='products')

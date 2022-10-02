@@ -5,20 +5,19 @@ from sqlalchemy import (
     Integer,
     Float,
     String,
-    ForeignKey,
     text,
-    UniqueConstraint,
-    BigInteger
+    BigInteger, PrimaryKeyConstraint, ForeignKeyConstraint
 )
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.tg_bot import TGBot
 
 
 class Customer(Base):
     __tablename__ = 'customers'
 
-    chat_id: int = Column(BigInteger, primary_key=True, nullable=False)
+    chat_id: int = Column(BigInteger, nullable=False)
     balance: float = Column(
         Float(precision=7, decimal_return_scale=2),
         nullable=False,
@@ -44,15 +43,20 @@ class Customer(Base):
     first_name: str = Column(String(64))
     last_name: str = Column(String(64))
 
-    ref_key = 'customers.chat_id'
-    ref_customer_id: Optional[int] = Column(Integer, ForeignKey(ref_key))
-    referrals: Optional[int] = relationship('Customer')
+    ref_chat_id: Optional[int] = Column(BigInteger, nullable=True)
+    ref_tg_bot_id: Optional[int] = Column(BigInteger, nullable=True)
+    referrals = relationship('Customer')
 
-    tg_bot_id: int = Column(BigInteger, ForeignKey('tg_bots.tg_bot_id'))
-    tg_bot = relationship('TGBot', backref='customers')
+    tg_bot_id: int = Column(BigInteger)
+    tg_bot = relationship(TGBot.__name__, backref='customers')
 
     __table_args__ = (
-        UniqueConstraint(chat_id, tg_bot_id, name='idx_chat_id_tg_bot_id'),
+        PrimaryKeyConstraint(chat_id, tg_bot_id),
+        ForeignKeyConstraint((ref_chat_id, ref_tg_bot_id),
+                             [chat_id, tg_bot_id]),
+        ForeignKeyConstraint((tg_bot_id,),
+                             [TGBot.tg_bot_id])
+        # UniqueConstraint(chat_id, tg_bot_id, name='idx_chat_id_tg_bot_id'),
     )
 
     def __repr__(self):

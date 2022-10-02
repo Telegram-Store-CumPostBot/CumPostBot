@@ -2,16 +2,16 @@ from datetime import datetime
 
 from sqlalchemy import (
     Column,
-    Integer,
     DateTime,
     String,
     Float,
-    ForeignKey,
     BigInteger,
+    ForeignKeyConstraint,
 )
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
+from database.models.tables.customer import Customer
 
 utcnow = datetime.utcnow
 
@@ -31,9 +31,14 @@ class QiWiPayroll(Base):
         Float(precision=7, decimal_return_scale=2),
         nullable=False
     )
+    customer_chat_id: int = Column(BigInteger)
+    customer_tg_bot_id: int = Column(BigInteger)
+    customer = relationship(Customer.__name__, backref='qiwi_payrolls')
 
-    customer_id: int = Column(BigInteger, ForeignKey('customers.chat_id'))
-    customer = relationship('Customer', backref='qiwi_payrolls')
+    __table_args__ = (
+        ForeignKeyConstraint((customer_chat_id, customer_tg_bot_id),
+                             [Customer.chat_id, Customer.tg_bot_id]),
+    )
 
     def __repr__(self):
         return f'user={self.customer_id}, amount={self.amount}'
