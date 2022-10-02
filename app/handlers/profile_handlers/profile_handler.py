@@ -1,4 +1,3 @@
-from collections import namedtuple
 from string import Template
 from typing import Any
 
@@ -6,6 +5,7 @@ from aiogram import Router, flags
 from aiogram.dispatcher.filters import Text
 
 from data_models.user_models import ProfileInfo, MoneyUserInfo
+from database.engine import AsyncSessionTyping, async_session
 from database.models.api.customer import DBAPICustomer
 from decorators.handler_decorators.clear_inline_message import \
     clear_inline_message
@@ -29,11 +29,6 @@ profile_template = Template(
 ◉───────────────◉'''
 )
 
-Message = namedtuple('Message', [
-    'chat_id',
-    'message_id'
-])
-
 
 @router.message(Text(text=[PROFILE]))
 @flags.rate_limit({config['FlagsNames']['throttling_key']: 'profile',
@@ -49,16 +44,22 @@ class ProfileHandler(MessageHandlerTemplate):
         )
 
         await self.clear_state()
-        profile_info: ProfileInfo = await DBAPICustomer.get_static_info(
-            self.chat.id,
-            self.bot.id
-        )
-        balance_info: MoneyUserInfo = await DBAPICustomer.get_balance(
-            self.chat.id,
-            self.bot.id
-        )
 
-        msg = await self.event.answer(
+        msg = await self.__generate_profile_message()
+        user_id = self.from_user.id
+
+        self.bot.add_deleted_message(user_id, msg.message_id)
+        self.bot.add_deleted_message(user_id, self.event.message_id)
+        return msg
+
+    async def __generate_profile_message(
+            self,
+    ):
+        async with async_session() as session:
+            profile_info = await self.__get_profile_info(session)
+            balance_info = await self.__get_balance_info(session)
+
+        return await self.event.answer(
             text=profile_template.substitute(
                 {
                     'balance': balance_info.total_balance,
@@ -70,8 +71,23 @@ class ProfileHandler(MessageHandlerTemplate):
             ),
             parse_mode="MarkdownV2"
         )
-        deleted_messages = self.bot.deleted_messages.get(self.from_user.id, [])
-        deleted_messages.append(Message(msg.chat.id, msg.message_id))
-        deleted_messages.append(Message(msg.chat.id, self.event.message_id))
-        self.bot.deleted_messages[self.from_user.id] = deleted_messages
-        return msg
+
+    async def __get_profile_info(
+            self,
+            session: AsyncSessionTyping
+    ) -> ProfileInfo:
+        return await DBAPICustomer.get_static_info(
+            session=session,
+            chat_id=self.chat.id,
+            bot_id=self.bot.id
+        )
+
+    async def __get_balance_info(
+            self,
+            session: AsyncSessionTyping
+    ) -> MoneyUserInfo:
+        return await DBAPICustomer.get_balance(
+            session=session,
+            chat_id=self.chat.id,
+            bot_id=self.bot.id
+        )

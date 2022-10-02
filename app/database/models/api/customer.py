@@ -3,6 +3,7 @@ from typing import Optional
 from ormar import NoMatch
 
 from data_models.user_models import MoneyUserInfo, ProfileInfo
+from database.engine import AsyncSessionTyping
 from database.models.api.customer_methods.check_availability import (
     check_availability,
 )
@@ -18,28 +19,44 @@ class DBAPICustomer:
     @classmethod
     async def create_user(
             cls,
+            session: AsyncSessionTyping,
             chat_id: int,
             username: str,
             first_name: str,
             last_name: str,
             refer_id: Optional[int] = None,
-            tg_bot_id: Optional[int] = None,
+            bot_id: Optional[int] = None,
     ) -> Customer:
         return await create_new(
-            chat_id, username, first_name, last_name, refer_id, tg_bot_id
+            session, chat_id, username, first_name, last_name, refer_id, bot_id
         )
 
     @classmethod
-    async def check_availability(cls, chat_id: int, bot_id: int) -> bool:
-        return await check_availability(chat_id, bot_id)
+    async def check_availability(
+            cls,
+            session: AsyncSessionTyping,
+            chat_id: int,
+            bot_id: int,
+    ) -> bool:
+        return await check_availability(session, chat_id, bot_id)
 
     @classmethod
-    async def get_balance(cls, chat_id: int, bot_id: int) -> MoneyUserInfo:
-        return await get_balance(chat_id, bot_id)
+    async def get_balance(
+            cls,
+            session: AsyncSessionTyping,
+            chat_id: int,
+            bot_id: int
+    ) -> MoneyUserInfo:
+        return await get_balance(session, chat_id, bot_id)
 
     @classmethod
-    async def get_static_info(cls, chat_id: int, bot_id: int) -> ProfileInfo:
-        return await get_static_info(chat_id, bot_id)
+    async def get_static_info(
+            cls,
+            session: AsyncSessionTyping,
+            chat_id: int,
+            bot_id: int
+    ) -> ProfileInfo:
+        return await get_static_info(session, chat_id, bot_id)
 
     @classmethod
     async def find_customer_by_qiwi_comment(cls, qiwi_comment: str) -> Optional[Customer]:

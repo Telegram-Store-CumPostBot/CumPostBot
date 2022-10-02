@@ -13,8 +13,8 @@ async def create_new(
         admin_id: Optional[int] = None,
 ) -> TGBot:
     log = get_logger(__name__)
-    log.info('call method "create bot" bot_id: %d bot_token: %s admin_id: %d',
-             bot_id, bot_token, admin_id)
+    log.info('call method "create bot" bot_id: %d bot_token: %s admin_id: %s',
+             bot_id, bot_token, str(admin_id))
 
     async with async_session() as session:
         bot = TGBot(
@@ -27,6 +27,6 @@ async def create_new(
         session.add(bot)
         await session.commit()
     log = get_logger(__name__)
-    log.info('success create bot bot_id: %d bot_token: %s admin_id: %d',
-             bot_id, bot_token, admin_id)
+    log.info('success create bot bot_id: %d bot_token: %s admin_id: %s',
+             bot_id, bot_token, str(admin_id))
     return bot
