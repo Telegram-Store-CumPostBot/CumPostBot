@@ -18,7 +18,7 @@ from database.engine import Base
 class Customer(Base):
     __tablename__ = 'customers'
 
-    customer_id: int = Column(BigInteger, primary_key=True, autoincrement=True)
+    customer_id: int = Column(Integer, primary_key=True, autoincrement=True)
     balance: float = Column(
         Float(precision=7, decimal_return_scale=2),
         nullable=False,
@@ -29,7 +29,7 @@ class Customer(Base):
         nullable=False,
         server_default=text('0')
     )
-    chat_id: int = Column(Integer, nullable=False)
+    chat_id: int = Column(BigInteger, nullable=False)
     sum_orders: float = Column(
         Float(precision=7, decimal_return_scale=2),
         nullable=False,
