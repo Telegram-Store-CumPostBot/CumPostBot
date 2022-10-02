@@ -29,8 +29,6 @@ class CustomRequestService(RequestService):
             **url_kw: Any
     ) -> T:
         while not self._can_execute_method:
-            print('sleep')
-            print(self.last_execute)
             delay = time.time() - self.last_execute[self._access_token]
             await asyncio.sleep(MAX_QIWI_REQUESTS_PER_SECOND - delay)
         self.__class__.last_execute[self._access_token] = time.time()

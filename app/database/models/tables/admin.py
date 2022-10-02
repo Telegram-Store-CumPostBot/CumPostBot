@@ -6,8 +6,7 @@ from database.engine import Base
 class Admin(Base):
     __tablename__ = 'admins'
 
-    admin_id: int = Column(Integer, primary_key=True, autoincrement=True)
-    chat_id: int = Column(BigInteger, nullable=False)
+    chat_id: int = Column(BigInteger, primary_key=True, nullable=False)
     debt: float = Column(
         Float(precision=7, decimal_return_scale=2),
         nullable=False,

@@ -32,7 +32,7 @@ class QiWiPayroll(Base):
         nullable=False
     )
 
-    customer_id: int = Column(Integer, ForeignKey('customers.customer_id'))
+    customer_id: int = Column(BigInteger, ForeignKey('customers.chat_id'))
     customer = relationship('Customer', backref='qiwi_payrolls')
 
     def __repr__(self):

@@ -36,18 +36,18 @@ class GetNewPayments(BaseQiWiMethod):
             return NewTransactions([], None)
         if not self._last_operate_payment:
             return NewTransactions([], transactions[0].id)
-
         new_transactions = []
         top_transaction_id = transactions[0].id
         while True:
             self._next_id = transactions.next_transaction_id
             self._next_date = transactions.next_transaction_date
-            transactions = await self._get_transactions()
             tmp_new_trans = filter(self.filter_comp, transactions)
             new_transactions.extend(tmp_new_trans)
 
             if self.stop_iterations:
                 break
+            transactions = await self._get_transactions()
+            transactions = transactions.transactions
 
         return NewTransactions(new_transactions, top_transaction_id)
 

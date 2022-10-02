@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, BigInteger
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
@@ -18,5 +18,9 @@ class Product(Base):
         Integer,
         ForeignKey('product_versions.pv_id')
     )
-    admin_id: int = Column(Integer, ForeignKey('admins.admin_id'), index=True)
+    admin_id: int = Column(
+        BigInteger,
+        ForeignKey('admins.chat_id'),
+        index=True
+    )
     admin = relationship('Admin', backref='products')

@@ -9,10 +9,8 @@ def async_rate_limit(delay):
         async def decorator_sleep():
             while True:
                 if time.time() - count[0] > delay:
-                    print('call func')
                     count[0] = time.time()
                     return
-                print(f'sleep for {delay - (time.time() - count[0])}')
                 await asyncio.sleep(delay - (time.time() - count[0]))
 
         async def decorator(*args, **kwargs):
