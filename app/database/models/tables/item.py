@@ -9,7 +9,11 @@ class Item(Base):
 
     id: int = Column(Integer, primary_key=True, autoincrement=True)
     product_line: str = Column(Text, nullable=False)
-    cost_price: float = Column(Float, nullable=False, server_default=text('0'))
+    cost_price: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False,
+        server_default=text('0')
+    )
 
     product_id: int = Column(
         Integer,

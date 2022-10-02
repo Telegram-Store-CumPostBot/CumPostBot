@@ -1,6 +1,14 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, DateTime, String, Float, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    DateTime,
+    String,
+    Float,
+    ForeignKey,
+    BigInteger,
+)
 from sqlalchemy.orm import relationship
 
 from database.engine import Base
@@ -8,15 +16,21 @@ from database.engine import Base
 utcnow = datetime.utcnow
 
 
-class QiwiPayroll(Base):
+class QiWiPayroll(Base):
     __tablename__ = 'qiwi_payrolls'
 
-    txn_id: int = Column(Integer, primary_key=True, autoincrement=False)
+    txn_id: int = Column(BigInteger, primary_key=True, autoincrement=False)
     check_date: datetime = Column(DateTime, nullable=False, default=utcnow)
     qiwi_date: datetime = Column(DateTime, nullable=False)
     comment: str = Column(String(255), nullable=False)
-    amount: float = Column(Float, nullable=False)
-    commission: float = Column(Float, nullable=False)
+    amount: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False
+    )
+    commission: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False
+    )
 
     customer_id: int = Column(Integer, ForeignKey('customers.customer_id'))
     customer = relationship('Customer', backref='qiwi_payrolls')

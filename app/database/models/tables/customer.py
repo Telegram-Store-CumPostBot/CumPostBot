@@ -19,12 +19,28 @@ class Customer(Base):
     __tablename__ = 'customers'
 
     customer_id: int = Column(Integer, primary_key=True, autoincrement=True)
-    balance: float = Column(Float, nullable=False, server_default=text('0'))
-    fake_bal: float = Column(Float, nullable=False, server_default=text('0'))
+    balance: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False,
+        server_default=text('0')
+    )
+    fake_bal: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False,
+        server_default=text('0')
+    )
     chat_id: int = Column(Integer, nullable=False)
-    sum_orders: float = Column(Float, nullable=False, server_default=text('0'))
+    sum_orders: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False,
+        server_default=text('0')
+    )
     ref_count: int = Column(Integer, nullable=False, server_default=text('0'))
-    ref_fees: float = Column(Float, nullable=False, server_default=text('0'))
+    ref_fees: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False,
+        server_default=text('0')
+    )
     username: str = Column(String(32))
     first_name: str = Column(String(64))
     last_name: str = Column(String(64))

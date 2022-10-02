@@ -11,8 +11,14 @@ class ProductVersion(Base):
     __tablename__ = 'product_versions'
 
     pv_id: int = Column(Integer, primary_key=True, autoincrement=True)
-    price: float = Column(Float, nullable=False)
-    old_price: Optional[float] = Column(Float, nullable=True)
+    price: float = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=False
+    )
+    old_price: Optional[float] = Column(
+        Float(precision=7, decimal_return_scale=2),
+        nullable=True
+    )
     description: str = Column(Text, nullable=False)
     extended_description: str = Column(Text, nullable=False)
 
