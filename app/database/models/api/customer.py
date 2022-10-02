@@ -1,7 +1,5 @@
 from typing import Optional
 
-from ormar import NoMatch
-
 from data_models.user_models import MoneyUserInfo, ProfileInfo
 from database.engine import AsyncSessionTyping
 from database.models.api.customer_methods.check_availability import (
@@ -12,6 +10,10 @@ from database.models.api.customer_methods.get_balance import get_balance
 from database.models.api.customer_methods.get_static_info import (
     get_static_info,
 )
+from database.models.api.customer_methods.operate_qiwi_payment import \
+    operate_qiwi_payment
+from database.models.api.customer_methods.update_user_balance import \
+    update_user_balance
 from database.models.tables.customer import Customer
 
 
@@ -24,11 +26,13 @@ class DBAPICustomer:
             username: str,
             first_name: str,
             last_name: str,
-            refer_id: Optional[int] = None,
-            bot_id: Optional[int] = None,
+            tg_bot_id: int,
+            ref_chat_id: Optional[int] = None,
+            ref_tg_bot_id: Optional[int] = None,
     ) -> Customer:
         return await create_new(
-            session, chat_id, username, first_name, last_name, refer_id, bot_id
+            session, chat_id, username, first_name,
+            last_name, tg_bot_id, ref_chat_id, ref_tg_bot_id
         )
 
     @classmethod
@@ -59,26 +63,27 @@ class DBAPICustomer:
         return await get_static_info(session, chat_id, bot_id)
 
     @classmethod
-    async def find_customer_by_qiwi_comment(cls, qiwi_comment: str) -> Optional[Customer]:
-        if not qiwi_comment.isdigit():
-            return None
-        try:
-            return await Customer.objects.get(
-                Customer.customer_id == int(qiwi_comment)
-            )
-        except NoMatch:
-            return None
+    async def update_user_balance(
+            cls,
+            session: AsyncSessionTyping,
+            bot_id: int,
+            user_id: int,
+            amount: float,
+    ):
+        await update_user_balance(
+            session,
+            bot_id,
+            user_id,
+            amount
+        )
 
     @classmethod
-    async def update_balance_by_qiwi_comment(
-            cls, qiwi_comment: str,
-            amount: int
-    ):
-        if not qiwi_comment.isdigit():
-            return None
-        chat_id = int(qiwi_comment)
-        await Customer.objects.filter(
-            chat_id=chat_id
-        ).update({
-            Customer.balance: Customer.balance+amount
-        })
+    async def operate_qiwi_payment(
+            cls,
+            session: AsyncSessionTyping,
+            bot_id: int,
+            comment: str,
+            amount: float
+    ) -> Optional[int]:
+        """Возвращает id пользователя, к которому присвоили платеж"""
+        return await operate_qiwi_payment(session, bot_id, comment, amount)
