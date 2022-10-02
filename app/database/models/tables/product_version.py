@@ -28,5 +28,5 @@ class ProductVersion(Base):
 
     __table_args__ = (
         ForeignKeyConstraint((product_id,),
-                             [Product.product_id])
+                             [Product.product_id]),
     )

@@ -27,5 +27,5 @@ class TGBot(Base):
 
     __table_args__ = (
         ForeignKeyConstraint((admin_id,),
-                             [Admin.chat_id])
+                             [Admin.chat_id]),
     )
