@@ -45,9 +45,6 @@ class StartHandler(MessageHandlerTemplate):
         )
 
     async def _create_user(self, session: AsyncSessionTyping):
-        """Создает пользователя, если его не
-        и возвращает приветственный текст (start_text)"""
-
         log = get_logger(__name__)
         log.info(
             'bot_id=%d, chat_id=%d, username=%s: register new user',
@@ -55,8 +52,8 @@ class StartHandler(MessageHandlerTemplate):
         await DBAPICustomer.create_user(
             session=session,
             chat_id=self.chat.id,
-            tg_bot_id=self.bot.id,
-            username=self.chat.username,
-            first_name=self.chat.first_name,
+            username=self.from_user.username,
+            first_name=self.from_user.first_name,
             last_name=self.chat.last_name,
+            tg_bot_id=self.bot.id,
         )
