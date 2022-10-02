@@ -51,11 +51,11 @@ class Customer(Base):
     tg_bot = relationship(TGBot.__name__, backref='customers')
 
     __table_args__ = (
-        PrimaryKeyConstraint(chat_id, tg_bot_id),
         ForeignKeyConstraint((ref_chat_id, ref_tg_bot_id),
                              [chat_id, tg_bot_id]),
         ForeignKeyConstraint((tg_bot_id,),
-                             [TGBot.tg_bot_id])
+                             [TGBot.tg_bot_id]),
+        PrimaryKeyConstraint(chat_id, tg_bot_id),
         # UniqueConstraint(chat_id, tg_bot_id, name='idx_chat_id_tg_bot_id'),
     )
 
