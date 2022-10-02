@@ -16,7 +16,7 @@ class TGBot(Base):
 
     admin_id: int = Column(
         Integer,
-        ForeignKey('admins.admin_id'),
+        ForeignKey('admins.chat_id'),
         nullable=True
     )
     admin = relationship('Admin', backref='tg_bots')

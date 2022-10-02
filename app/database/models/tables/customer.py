@@ -44,7 +44,7 @@ class Customer(Base):
     first_name: str = Column(String(64))
     last_name: str = Column(String(64))
 
-    ref_key = 'customers.customer_id'
+    ref_key = 'customers.chat_id'
     ref_customer_id: Optional[int] = Column(Integer, ForeignKey(ref_key))
     referrals: Optional[int] = relationship('Customer')
 
