@@ -27,7 +27,7 @@ class StartHandler(MessageHandlerTemplate):
 
         await self.clear_state()
         async with async_session() as session:
-            if not self._check_availability(session):
+            if not await self._check_availability(session):
                 start_text = f'{name}, добро пожаловать в секту!)'
                 await self._create_user(session)
                 await session.commit()
