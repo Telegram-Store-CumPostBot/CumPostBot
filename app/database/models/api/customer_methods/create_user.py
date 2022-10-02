@@ -27,17 +27,15 @@ async def create_new(
 ) -> Customer:
     log = get_logger(__name__)
     log.info('create new user chat_id: %d bot_id: %d', chat_id, tg_bot_id)
-    kwargs = {
-        'chat_id': chat_id,
-        'username': username,
-        'first_name': first_name,
-        'last_name': last_name,
-    }
-    if ref_chat_id:
-        kwargs['refer_id'] = ref_chat_id
-    if ref_tg_bot_id:
-        kwargs['tg_bot_id'] = ref_tg_bot_id
-    user = Customer(**kwargs)
+    user = Customer(
+        chat_id=chat_id,
+        username=username,
+        first_name=first_name,
+        last_name=last_name,
+        tg_bot_id=tg_bot_id,
+        ref_chat_id=ref_chat_id,
+        ref_tg_bot_id=ref_tg_bot_id,
+    )
     session.add(user)
     log.info('success add new user chat_id: %d bot_id: %d in session',
              chat_id, tg_bot_id)
