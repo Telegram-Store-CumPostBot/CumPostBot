@@ -27,7 +27,8 @@ class Bot(AiogramBot):
     ):
         user_messages = self.__deleted_messages.get(user_id, [])
         msg = Message(chat_id=user_id, message_id=message_id)
-        self.__deleted_messages[user_id] = user_messages.append(msg)
+        user_messages.append(msg)
+        self.__deleted_messages[user_id] = user_messages
 
     def get_deleted_message(self, user_id: int) -> list[Message]:
         return self.__deleted_messages.get(user_id, [])
