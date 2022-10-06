@@ -1,6 +1,6 @@
 from typing import Optional, cast
 
-from aiogram.dispatcher.handler import BaseHandlerMixin
+from aiogram.handlers import BaseHandlerMixin
 from aiogram.types import Message
 from glQiwiApi import QiwiWrapper
 

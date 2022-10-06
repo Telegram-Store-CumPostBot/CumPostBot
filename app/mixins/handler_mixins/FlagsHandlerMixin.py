@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 
-from aiogram.dispatcher.handler import BaseHandlerMixin
+from aiogram.handlers import BaseHandlerMixin
 from aiogram.types import Message
 
 
