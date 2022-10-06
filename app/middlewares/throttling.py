@@ -1,7 +1,7 @@
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
-from aiogram.dispatcher.flags.getter import get_flag
+from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message
 
 from errors.NoFoundRateLimitFlag import NoFoundRateLimitFlagError
