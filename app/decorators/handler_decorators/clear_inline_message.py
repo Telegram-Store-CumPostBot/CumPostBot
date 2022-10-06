@@ -1,6 +1,6 @@
 import asyncio
 
-from aiogram.dispatcher.handler import BaseHandler
+from aiogram.handlers import BaseHandler
 
 from handlers.custom_base_handlers import CustomMessageHandler
 
