@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from aiogram.dispatcher.fsm.context import FSMContext
-from aiogram.dispatcher.handler import BaseHandlerMixin
+from aiogram.fsm.context import FSMContext
+from aiogram.handlers import BaseHandlerMixin
 from aiogram.types import Message
 
 from logger import get_logger
