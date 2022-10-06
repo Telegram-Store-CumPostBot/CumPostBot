@@ -2,6 +2,7 @@ from typing import Any
 
 from aiogram import Router
 
+from Filters.QiWi.bot_has_qiwi_service import BotHasQiWiService
 from database.engine import async_session, AsyncSessionTyping
 from database.models.api.customer import DBAPICustomer
 from keyboards.main_menu_keyboard import MainMenuKeyboard
@@ -15,7 +16,7 @@ from handlers.template_handlers.message_handler_template import (
 router = Router()
 
 
-@router.message(commands=['start'])
+@router.message(BotHasQiWiService(), commands=['start'])
 class StartHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import cast, Any
 
-from aiogram.dispatcher.handler import MessageHandler
+from aiogram.handlers import MessageHandler
 
 from update_aiogram.client.bot import Bot
 

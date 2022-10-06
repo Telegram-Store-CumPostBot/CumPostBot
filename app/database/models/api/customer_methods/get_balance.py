@@ -10,11 +10,11 @@ from logger import get_logger
 from settings.settings import config
 
 
-cache_key = 'customer:balance:{chat_id}{bot_id}'
+key_cache = 'customer:balance:{chat_id}{bot_id}'
 ttl_cache = float(config['CacheTimings']['user_balance'])
 
 
-@cache(ttl=ttl_cache, key=cache_key)
+@cache(ttl=ttl_cache, key=key_cache)
 async def get_balance(
         session: AsyncSessionTyping,
         chat_id: int,

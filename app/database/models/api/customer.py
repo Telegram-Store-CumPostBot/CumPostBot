@@ -67,13 +67,13 @@ class DBAPICustomer:
             cls,
             session: AsyncSessionTyping,
             bot_id: int,
-            user_id: int,
+            chat_id: int,
             amount: float,
     ):
         await update_user_balance(
             session,
             bot_id,
-            user_id,
+            chat_id,
             amount
         )
 

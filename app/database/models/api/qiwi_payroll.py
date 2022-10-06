@@ -16,9 +16,11 @@ class DBAPIQiWiPayroll:
             comment: str,
             amount: float,
             commission: float,
-            user_id: int,
+            customer_chat_id: int,
+            customer_tg_bot_id: int,
     ) -> QiWiPayroll:
         qiwi_date = qiwi_date.replace(tzinfo=None)
         return await create_new_qiwi_payroll(
-            session, txn_id, qiwi_date, comment, amount, commission, user_id
+            session, txn_id, qiwi_date, comment, amount, commission,
+            customer_chat_id, customer_tg_bot_id
         )
