@@ -2,7 +2,7 @@ from string import Template
 from typing import Any
 
 from aiogram import Router, flags
-from aiogram.dispatcher.filters import Text
+from aiogram.filters import Text
 
 from data_models.user_models import ProfileInfo, MoneyUserInfo
 from database.engine import AsyncSessionTyping, async_session
