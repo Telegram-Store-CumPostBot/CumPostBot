@@ -1,6 +1,7 @@
 from typing import Any
 
 from aiogram import Router
+from aiogram.filters import CommandStart
 
 from Filters.QiWi.bot_has_qiwi_service import BotHasQiWiService
 from database.engine import async_session, AsyncSessionTyping
@@ -16,7 +17,7 @@ from handlers.template_handlers.message_handler_template import (
 router = Router()
 
 
-@router.message(BotHasQiWiService(), commands=['start'])
+@router.message(CommandStart(), BotHasQiWiService())
 class StartHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
