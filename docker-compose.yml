@@ -11,7 +11,14 @@ services:
     ports:
       - "5432:5432"
     command: ["postgres", "-c", "log_statement=all"]
-
+  redis:
+    image: "redis:alpine"
+    command: ["redis-server", "--requirepass ${REDIS_PASS:-password123}"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - redis-conf:/user/local/etc/redis/redis.conf
 #  rabbitmq:
 #    image: rabbitmq:3-management-alpine
 #    container_name: 'rabbitmq'
@@ -30,3 +37,7 @@ services:
 #networks:
 #  rabbitmq_go_net:
 #    driver: bridge
+
+volumes:
+  redis-data:
+  redis-conf:
