@@ -26,9 +26,9 @@ balance_template = Template(
 
  │  🤑*Реф\\. отчисления:* `$ref_payments`
  │  🧾*Сумма покупок:* `$total`
+ │  👥*Рефералы:* `$referrals`
 ◉───────────────◉'''
 )
-
 
 @router.message(Text(text=[BALANCE_INFO]))
 class ShowBalanceInfoHandler(MessageHandlerTemplate):
@@ -44,16 +44,6 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
         return await self.event.answer(
             text=msg_text,
             reply_markup=MainMenuKeyboard().get(),
-        )
-
-    async def __generate_profile_message__(
-            self,
-    ):
-        balance_info = await self.__get_balance_info()
-
-        return await self.event.answer(
-            text=self.__generate_profile_message(balance_info),
-            parse_mode="MarkdownV2"
         )
 
     async def __get_balance_info(
@@ -73,5 +63,6 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
                     'balance': bal_info.total_balance,
                     'ref_payments': bal_info.referral_fees,
                     'total': bal_info.sum_orders,
+                    'referrals': 1
                 }
             )
