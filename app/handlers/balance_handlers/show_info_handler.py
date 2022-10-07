@@ -26,9 +26,10 @@ balance_template = Template(
 
  │  🤑*Реф\\. отчисления:* `$ref_payments`
  │  🧾*Сумма покупок:* `$total`
- │  👥*Рефералы:* `$referrals`
+ │  👥 * Рефералы: *  `$referrals`
 ◉───────────────◉'''
 )
+
 
 @router.message(Text(text=[BALANCE_INFO]))
 class ShowBalanceInfoHandler(MessageHandlerTemplate):
