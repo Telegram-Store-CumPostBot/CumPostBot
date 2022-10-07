@@ -26,9 +26,7 @@ balance_template = Template(
 
  │  🤑*Реф\\. отчисления:* `$ref_payments`
  │  🧾*Сумма покупок:* `$total`
- │  👥*Рефералы:* `$referrals`
-◉───────────────◉
-'''
+◉───────────────◉'''
 )
 
 
@@ -46,6 +44,7 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
         return await self.event.answer(
             text=msg_text,
             reply_markup=MainMenuKeyboard().get(),
+            parse_mode="MarkdownV2",
         )
 
     async def __get_balance_info(
@@ -61,10 +60,9 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
     def __generate_profile_message(self, bal_info: MoneyUserInfo) -> str:
         return balance_template.substitute(
                 {
-                    'balance': bal_info.total_balance,
                     'id': self.chat.id,
-                    'referrals': 1,
+                    'balance': bal_info.total_balance,
+                    'ref_payments': bal_info.referral_fees,
                     'total': bal_info.sum_orders,
-                    'ref_payments': bal_info.referral_fees
                 }
             )
