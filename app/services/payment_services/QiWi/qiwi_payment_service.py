@@ -17,6 +17,8 @@ from services.payment_services.QiWi.QiWiAPI.client.extended.QiWiClient import (
 
 
 class QiWiPaymentService(PaymentService):
+    _implementations = {}
+
     def __init__(
             self,
             access_token: str,
@@ -28,9 +30,25 @@ class QiWiPaymentService(PaymentService):
         self._tg_bot_id = tg_bot_id
         self._qiwi_api = QiWiClient(access_token, phone)
 
+    def __new__(
+            cls,
+            access_token: str,
+            phone: str,
+            tg_bot_id: int,
+    ):
+        key = (access_token, phone, tg_bot_id)
+        if not QiWiPaymentService._implementations.get(key):
+            QiWiPaymentService._implementations[key] = super(
+                QiWiPaymentService, cls
+            ).__new__(cls, access_token, phone, tg_bot_id)
+        return QiWiPaymentService._implementations[key]
+
+    async def last_operate_payment(self) -> int:
+        return await DBAPITGBot.get_qiwi_txn(self._tg_bot_id)
+
     @one_run
     async def check_new_payments(self):
-        qiwi_txn = await DBAPITGBot.get_qiwi_txn(self._tg_bot_id)
+        qiwi_txn = await self.last_operate_payment()
         res = await self._qiwi_api.get_new_payments(
             qiwi_txn
         )
@@ -73,6 +91,7 @@ class QiWiPaymentService(PaymentService):
                         chat_id,
                         self._tg_bot_id,
                     )
+
         except IntegrityError:
             log.info('txn_id: %d, comment: %s, amount: %f - '
                      'try add duplicate trans',

@@ -4,8 +4,6 @@ from aiogram import Bot as AiogramBot
 from aiogram.client.session.base import BaseSession
 
 from data_models.message import Message
-from services.payment_services.QiWi.qiwi_payment_service import \
-    QiWiPaymentService
 
 
 class Bot(AiogramBot):
@@ -18,15 +16,8 @@ class Bot(AiogramBot):
             qiwi_phone_with_plus: str = None,
     ) -> None:
         self.__deleted_messages = {}
+        self.has_qiwi = qiwi_access_token and qiwi_phone_with_plus
         super().__init__(token, session, parse_mode)
-
-        self._qiwi_service = None
-        if qiwi_access_token and qiwi_phone_with_plus:
-            self._qiwi_service = QiWiPaymentService(
-                access_token=qiwi_access_token,
-                phone=qiwi_phone_with_plus,
-                tg_bot_id=self.id
-            )
 
     def add_deleted_message(
             self,

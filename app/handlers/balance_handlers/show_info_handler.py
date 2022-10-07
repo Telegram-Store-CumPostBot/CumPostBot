@@ -1,48 +1,84 @@
+from string import Template
 from typing import Any
 
 from aiogram import Router
-from aiogram.dispatcher.filters import Text
+from aiogram.filters import Text
 
-from database.models.tables.customer import Customer
+from data_models.user_models import MoneyUserInfo
+from database.engine import async_session
+from database.models.api.customer import DBAPICustomer
 from keyboards.main_menu_keyboard import MainMenuKeyboard
 from logger import get_logger
 
-from handlers.template_handlers.message_handler_template import MessageHandlerTemplate
+from handlers.template_handlers.message_handler_template import (
+    MessageHandlerTemplate,
+)
 from settings.message_constants import BALANCE_INFO
 
 router = Router()
 
 
+balance_template = Template(
+    '''
+◉───────────────◉
+ │  🆔*Ваш ID*: `$id`
+ │  💰*Баланс:* `$balance`
+
+ │  🤑*Реф\\. отчисления:* `$ref_payments`
+ │  🧾*Сумма покупок:* `$total`
+◉───────────────◉'''
+)
+
+
 @router.message(Text(text=[BALANCE_INFO]))
-class StartHandler(MessageHandlerTemplate):
+class ShowBalanceInfoHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
-        log.info('in bot bot_id=%d user with username=%s and chat_id=%d press "/BALANCE_INFO"', self.bot.id, self.chat.username, self.chat.id)
+        log.info('bot_id=%d username=%s chat_id=%d press "/BALANCE_INFO"',
+                 self.bot.id, self.chat.username, self.chat.id)
 
-        if self.state and (current_state := await self.state.get_state()) is not None:
-            log.debug('in bot_id=%d user with username=%s and chat_id=%d: canceling state: %s', self.bot.id, self.chat.username, self.chat.id,
-                      current_state)
-            await self.state.clear()
-
-        if not self.data['path']:
-            self.data['path']: list = []
-
-        self.data['path'].append(BALANCE_INFO)
-
-        start_text = f'И снова здравствуй дед максим ({self.chat.first_name} {self.chat.last_name})'
-
-        if not await Customer.check_availability(self.chat.id, self.bot.id):
-            log.info('in bot_id=%d register new user with chat_id=%d and username=%s', self.bot.id, self.chat.id, self.chat.username)
-            await Customer.create_new(
-                chat_id=self.chat.id,
-                bot_id=self.bot.id,
-                username=self.chat.username,
-                first_name=self.chat.first_name,
-                last_name=self.chat.last_name,
-            )
-            start_text = f'{self.chat.first_name} {self.chat.last_name}, добро пожаловать в секту!)'
+        await self.clear_state()
+        bal_info = await self.__get_balance_info()
+        msg_text = self.__generate_profile_message(bal_info)
 
         return await self.event.answer(
-            text=start_text,
+            text=msg_text,
             reply_markup=MainMenuKeyboard().get(),
         )
+
+    async def __generate_profile_message__(
+            self,
+    ):
+        balance_info = await self.__get_balance_info()
+
+        return await self.event.answer(
+            text=balance_template.substitute(
+                {
+                    'id': self.chat.id,
+                    'balance': balance_info.total_balance,
+                    'ref_payments': balance_info.referral_fees,
+                    'total': balance_info.sum_orders,
+                }
+            ),
+            parse_mode="MarkdownV2"
+        )
+
+    async def __get_balance_info(
+            self,
+    ) -> MoneyUserInfo:
+        async with async_session() as session:
+            return await DBAPICustomer.get_balance(
+                session=session,
+                chat_id=self.chat.id,
+                bot_id=self.bot.id
+            )
+
+    def __generate_profile_message(self, bal_info: MoneyUserInfo) -> str:
+        return balance_template.substitute(
+                {
+                    'id': self.chat.id,
+                    'balance': bal_info.total_balance,
+                    'ref_payments': bal_info.referral_fees,
+                    'total': bal_info.sum_orders,
+                }
+            )
