@@ -21,11 +21,11 @@ router = Router()
 balance_template = Template(
     '''
 ◉───────────────◉
- │  🆔*Ваш ID*: `$id`
- │  💰*Баланс:* `$balance`
+ │  🆔Ваш ID: `$id`
+ │  💰Баланс: `$balance`
 
- │  🤑*Реф\\. отчисления:* `$ref_payments`
- │  🧾*Сумма покупок:* `$total`
+ │  🤑Реф\\. отчисления: `$ref_payments`
+ │  🧾Сумма покупок: `$total`
 ◉───────────────◉'''
 )
 
@@ -52,14 +52,7 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
         balance_info = await self.__get_balance_info()
 
         return await self.event.answer(
-            text=balance_template.substitute(
-                {
-                    'id': self.chat.id,
-                    'balance': balance_info.total_balance,
-                    'ref_payments': balance_info.referral_fees,
-                    'total': balance_info.sum_orders,
-                }
-            ),
+            text=self.__generate_profile_message(balance_info),
             parse_mode="MarkdownV2"
         )
 
