@@ -27,8 +27,7 @@ class GetNewPayments(BaseQiWiMethod):
         self._request_service = request_service
         self._last_operate_payment = last_operate_payment
         self._phone_number_without_plus_sign = phone_number_without_plus_sign
-        self._next_id = None
-        self._next_date = None
+        self._next_id = self._next_date = None
 
     async def _work(self) -> NewTransactions:
         transactions = await self._get_transactions()
@@ -44,10 +43,9 @@ class GetNewPayments(BaseQiWiMethod):
             tmp_new_trans = filter(self.filter_comp, transactions)
             new_transactions.extend(tmp_new_trans)
 
-            if self.stop_iterations:
+            if self.stop_iterations():
                 break
             transactions = await self._get_transactions()
-            transactions = transactions.transactions
 
         return NewTransactions(new_transactions, top_transaction_id)
 
@@ -62,7 +60,6 @@ class GetNewPayments(BaseQiWiMethod):
                 phone_number=self._phone_number_without_plus_sign,
             )
 
-    @property
     def stop_iterations(self) -> bool:
         return not self._next_id or self._next_id <= self._last_operate_payment
 

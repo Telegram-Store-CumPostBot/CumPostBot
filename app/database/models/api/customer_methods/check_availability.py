@@ -16,6 +16,7 @@ async def check_availability(
 ) -> bool:
     log = get_logger(__name__)
     log.info('check user availability chat_id: %d bot_id: %d', chat_id, bot_id)
+
     query = query_check_availability(chat_id, bot_id)
     res: Result = await session.execute(query)
 

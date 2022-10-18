@@ -18,6 +18,7 @@ async def create_new_qiwi_payroll(
     log = get_logger(__name__)
     log.info('txn_id=%d, comment=%s, amount=%f - start',
              txn_id, comment, amount)
+
     payroll = QiWiPayroll(
         txn_id=txn_id,
         qiwi_date=qiwi_date,

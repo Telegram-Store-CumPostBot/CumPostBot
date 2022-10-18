@@ -13,6 +13,7 @@ async def set_qiwi_txn(tg_bot_id: int, qiwi_txn: int) -> bool:
     Пока всегда возвращает True"""
     log = get_logger(__name__)
     log.info('set_qiwi_txn bot_id: %d qiwi_txn: %d', tg_bot_id, qiwi_txn)
+
     async with async_session() as session:
         query = query_set_qiwi_txn(tg_bot_id, qiwi_txn)
         await session.execute(query)

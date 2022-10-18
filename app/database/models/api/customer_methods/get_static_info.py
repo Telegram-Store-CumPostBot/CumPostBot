@@ -21,6 +21,7 @@ async def get_static_info(
 ) -> ProfileInfo:
     log = get_logger(__name__)
     log.info('get_static_info chat_id: %d bot_id: %d', chat_id, bot_id)
+
     query = query_static_info(chat_id, bot_id)
     res = await session.execute(query)
 

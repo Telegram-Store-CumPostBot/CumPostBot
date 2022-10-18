@@ -27,6 +27,7 @@ async def create_new(
 ) -> Customer:
     log = get_logger(__name__)
     log.info('create new user chat_id: %d bot_id: %d', chat_id, tg_bot_id)
+
     user = Customer(
         chat_id=chat_id,
         tg_bot_id=tg_bot_id,

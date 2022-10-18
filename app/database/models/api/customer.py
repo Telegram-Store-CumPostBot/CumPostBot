@@ -10,10 +10,15 @@ from database.models.api.customer_methods.get_balance import get_balance
 from database.models.api.customer_methods.get_static_info import (
     get_static_info,
 )
-from database.models.api.customer_methods.operate_qiwi_payment import \
-    operate_qiwi_payment
-from database.models.api.customer_methods.update_user_balance import \
-    update_user_balance
+from database.models.api.customer_methods.operate_qiwi_payment import (
+    operate_qiwi_payment,
+)
+from database.models.api.customer_methods.qiwi_check_availability import (
+    qiwi_check_availability,
+)
+from database.models.api.customer_methods.update_user_balance import (
+    update_user_balance,
+)
 from database.models.tables.customer import Customer
 
 
@@ -42,7 +47,18 @@ class DBAPICustomer:
             chat_id: int,
             bot_id: int,
     ) -> bool:
-        return await check_availability(session, chat_id, bot_id)
+        return await check_availability(
+            session, chat_id, bot_id)
+
+    @classmethod
+    async def qiwi_check_availability(
+            cls,
+            session: AsyncSessionTyping,
+            qiwi_chat_id: int,
+            qiwi_bot_id: int,
+    ) -> bool:
+        return await qiwi_check_availability(
+            session, qiwi_chat_id, qiwi_bot_id)
 
     @classmethod
     async def get_balance(

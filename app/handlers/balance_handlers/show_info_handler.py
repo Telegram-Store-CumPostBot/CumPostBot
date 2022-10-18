@@ -7,9 +7,13 @@ from aiogram.filters import Text
 from data_models.user_models import MoneyUserInfo
 from database.engine import async_session
 from database.models.api.customer import DBAPICustomer
-from decorators.handler_decorators.clear_inline_message import \
-    clear_inline_message
-from keyboards.main_menu_keyboard import MainMenuKeyboard
+from decorators.handler_decorators.clear_inline_message import (
+    clear_inline_message,
+)
+from decorators.handler_decorators.will_delete_user_message import (
+    will_delete_user_message,
+)
+from keyboards.balance import BalanceInfoKeyboard
 from logger import get_logger
 
 from handlers.template_handlers.message_handler_template import (
@@ -17,6 +21,7 @@ from handlers.template_handlers.message_handler_template import (
 )
 from settings.message_constants import BALANCE_INFO
 from settings.settings import config
+
 
 router = Router()
 
@@ -37,6 +42,7 @@ balance_template = Template(
 @flags.rate_limit({config['FlagsNames']['throttling_key']: 'balance_info',
                    config['FlagsNames']['throttle_time']: 1})
 @clear_inline_message
+@will_delete_user_message
 class ShowBalanceInfoHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
@@ -46,17 +52,10 @@ class ShowBalanceInfoHandler(MessageHandlerTemplate):
         await self.clear_state()
         bal_info = await self.__get_balance_info()
         msg_text = self.__generate_profile_message(bal_info)
-
-        msg = await self.event.answer(
+        return await self.send_deleted_message(
             text=msg_text,
-            reply_markup=MainMenuKeyboard().get(),
-            parse_mode="MarkdownV2",
+            reply_markup=BalanceInfoKeyboard().get(),
         )
-
-        self.bot.add_deleted_message(self.chat.id, self.event.message_id)
-        self.bot.add_deleted_message(msg.chat.id, msg.message_id)
-
-        return
 
     async def __get_balance_info(
             self,

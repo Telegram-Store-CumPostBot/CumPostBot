@@ -30,7 +30,6 @@ def register_all_middlewares(dp: Dispatcher):
 
 
 def register_all_filters(dp: Dispatcher):
-    print(dp.message)
     # dp.filters_factory.bind()
     pass
 
@@ -91,6 +90,7 @@ def main():
         token=settings.tg_bot_token,
         qiwi_access_token=settings.qiwi_access_token,
         qiwi_phone_with_plus=settings.qiwi_phone,
+        parse_mode='MarkdownV2',
     )
     dp = Dispatcher(storage=storage)
     dp.startup.register(on_startup)

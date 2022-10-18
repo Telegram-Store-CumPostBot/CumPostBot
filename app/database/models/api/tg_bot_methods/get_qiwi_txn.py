@@ -13,6 +13,7 @@ from logger import get_logger
 async def get_qiwi_txn(tg_bot_id: int) -> Optional[int]:
     log = get_logger(__name__)
     log.info('get_qiwi_txn bot_id: %d', tg_bot_id)
+
     async with async_session() as session:
         query = query_get_qiwi_txn(tg_bot_id)
         res = await session.execute(query)
@@ -20,5 +21,9 @@ async def get_qiwi_txn(tg_bot_id: int) -> Optional[int]:
 
 
 def query_get_qiwi_txn(tg_bot_id: int) -> Select:
-    query = select(TGBot.qiwi_txn).where(TGBot.tg_bot_id == tg_bot_id)
+    query = select(
+        TGBot.qiwi_txn
+    ).where(
+        TGBot.tg_bot_id == tg_bot_id
+    )
     return query

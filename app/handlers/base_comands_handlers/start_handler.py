@@ -1,22 +1,32 @@
 from typing import Any
 
-from aiogram import Router
+from aiogram import Router, flags
 from aiogram.filters import CommandStart
 
 from database.engine import async_session, AsyncSessionTyping
 from database.models.api.customer import DBAPICustomer
+from decorators.handler_decorators.clear_inline_message import (
+    clear_inline_message,
+)
+from decorators.handler_decorators.will_delete_user_message import (
+    will_delete_user_message,
+)
 from keyboards.main_menu_keyboard import MainMenuKeyboard
 from logger import get_logger
 
 from handlers.template_handlers.message_handler_template import (
     MessageHandlerTemplate,
 )
+from middlewares.middlewares_settings import ThrottlingSettings
 
 
 router = Router()
 
 
 @router.message(CommandStart())
+@flags.rate_limit(ThrottlingSettings.DEFAULT_FLAGS)
+@will_delete_user_message
+@clear_inline_message
 class StartHandler(MessageHandlerTemplate):
     async def work(self) -> Any:
         log = get_logger(__name__)
@@ -33,9 +43,10 @@ class StartHandler(MessageHandlerTemplate):
                 await self._create_user(session)
                 await session.commit()
 
-        return await self.event.answer(
+        return await self.send_deleted_message(
             text=start_text,
             reply_markup=MainMenuKeyboard().get(),
+            parse_mode='HTML'
         )
 
     async def _check_availability(self, session: AsyncSessionTyping) -> bool:

@@ -3,6 +3,10 @@ import configparser
 from pydantic import BaseSettings
 
 
+def calculate_qiwi_amount(amount: float) -> float:
+    return max(amount - (amount // 100 + 1), 0)
+
+
 class Settings(BaseSettings):
     pg_user: str
     pg_pass: str

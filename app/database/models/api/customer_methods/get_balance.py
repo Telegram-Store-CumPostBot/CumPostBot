@@ -22,6 +22,7 @@ async def get_balance(
 ) -> MoneyUserInfo:
     log = get_logger(__name__)
     log.info('get user balance chat_id: %d bot_id: %d', chat_id, bot_id)
+
     query = get_query_get_balance_info(chat_id, bot_id)
     res: Result = await session.execute(query)
     user = res.first()

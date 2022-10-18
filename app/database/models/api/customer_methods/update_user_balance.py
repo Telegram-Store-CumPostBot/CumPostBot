@@ -15,6 +15,7 @@ async def update_user_balance(
     log = get_logger(__name__)
     log.info('bot_id: %d, chat_id: %d, amount: %d - start ',
              bot_id, chat_id, amount)
+
     query = query_update_balance(bot_id, chat_id, amount)
     await session.execute(query)
     log.info('bot_id: %d, chat_id: %d, amount: %d - '

@@ -17,7 +17,7 @@ def clear_inline_message(cls):
     # handle нужно определить, чтобы ABC не ругался
     class ClearInlineMessage(BaseHandler):
         def __init__(self, *args, **kwargs):
-            self.__handler: CustomMessageHandler = cls(*args, **kwargs)
+            self._handler: CustomMessageHandler = cls(*args, **kwargs)
 
         def __getattribute__(self, item):
             # метод этого класса или нет
@@ -31,18 +31,19 @@ def clear_inline_message(cls):
             # если просят handle, то оборачиваем его,
             # иначе просто возвращаем метод декорируемого хендлера
             if item != 'handle':
-                return self.__handler.__getattribute__(item)
+                return self._handler.__getattribute__(item)
             else:
-                self.__clear()
+                print('gay')
+                self._clear()
                 return self.handle
 
         async def handle(self):
-            await self.__clear()
-            await self.__handler.handle()
+            await self._clear()
+            await self._handler.handle()
 
-        async def __clear(self):
-            bot = self.__handler.bot
-            user_id = self.__handler.from_user.id
+        async def _clear(self):
+            bot = self._handler.bot
+            user_id = self._handler.from_user.id
             messages = bot.get_deleted_message(user_id)
             if not messages:
                 return

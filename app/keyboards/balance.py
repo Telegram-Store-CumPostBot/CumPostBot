@@ -3,7 +3,7 @@ from aiogram.types import KeyboardButton
 from keyboards.base import RegularKeyboard
 
 
-class MainMenuKeyboard(RegularKeyboard):
+class BalanceInfoKeyboard(RegularKeyboard):
     @property
     def _keyboard(self):
         return [
@@ -12,7 +12,6 @@ class MainMenuKeyboard(RegularKeyboard):
                 KeyboardButton(text='Проверить пополнения')
             ],
             [
-                KeyboardButton(text='Главная'),
-                KeyboardButton(text='Назад')
+                KeyboardButton(text='Главная')
             ],
         ]
