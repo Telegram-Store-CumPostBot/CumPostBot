@@ -12,5 +12,6 @@ def one_run(func):
         res = await func(*args, **kwargs)
         func.runs = False
         return res
+
     func.runs = False
     return wrapper

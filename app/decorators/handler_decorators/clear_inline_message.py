@@ -2,8 +2,6 @@ import asyncio
 
 from aiogram.handlers import BaseHandler
 
-from handlers.custom_base_handlers import CustomMessageHandler
-
 
 def clear_inline_message(cls):
     """Декоратор над хендлером, который вызывает все колбеки из
@@ -17,7 +15,7 @@ def clear_inline_message(cls):
     # handle нужно определить, чтобы ABC не ругался
     class ClearInlineMessage(BaseHandler):
         def __init__(self, *args, **kwargs):
-            self._handler: CustomMessageHandler = cls(*args, **kwargs)
+            self._handler = cls(*args, **kwargs)
 
         def __getattribute__(self, item):
             # метод этого класса или нет

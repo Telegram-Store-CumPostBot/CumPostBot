@@ -20,6 +20,32 @@ class CustomMessageHandler(MessageHandler, ABC):
         self._middleware: List[Coroutine] = []
         super().__init__(event, **kwargs)
 
+    async def _send_bot_deleted_message(
+            self,
+            chat_id: int,
+            text: str,
+            parse_mode: Optional[str] = UNSET,
+            disable_web_page_preview: Optional[bool] = None,
+            disable_notification: Optional[bool] = None,
+            reply_markup: Optional[
+                Union[
+                    InlineKeyboardMarkup,
+                    ReplyKeyboardMarkup,
+                    ReplyKeyboardRemove,
+                    ForceReply
+                ]
+            ] = None,
+    ):
+        msg = await self.bot.send_message(
+            chat_id=chat_id,
+            text=text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            disable_notification=disable_notification,
+            reply_markup=reply_markup,
+        )
+        self.bot.add_deleted_message(self.chat.id, msg.message_id)
+
     async def send_deleted_message(
         self,
         text: str,

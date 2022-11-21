@@ -43,7 +43,18 @@ class CheckNewPaymentsHandler(MessageHandlerTemplate):
 
         tasks = [self.bot.send_message(n.chat_id, n.message, parse_mode='HTML')
                  for n in notifications]
+
+        # Если захочется удалять сообщение о пополнении баланса
+        # tasks = [self._send_bot_deleted_message(
+        #     n.chat_id,
+        #     n.message,
+        #     parse_mode='HTML'
+        # ) for n in notifications]
         await asyncio.gather(*tasks)
-        if not tasks:
-            await self.send_deleted_message(
-                'Не обнаружили пополнений((', parse_mode='HTML')
+
+        # есть ли в списке на уведомление о пополнении текущий аккаунт
+        if list(filter(lambda n: n.chat_id == self.chat.id, notifications)):
+            return
+        await self.send_deleted_message(
+            'Не обнаружили пополнений((', parse_mode='HTML'
+        )

@@ -108,7 +108,7 @@ class QiWiPaymentService(PaymentService):
             return UserNotify(
                 chat_id=chat_id,
                 bot_id=self._tg_bot_id,
-                message=f'Баланс пополнен на {trans.sum.amount}'
+                message=f'Баланс пополнен на {qiwi_amount}'
             )
         except IntegrityError:
             log.info('txn_id: %d, comment: %s, amount: %f - '
